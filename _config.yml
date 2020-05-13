@@ -99,5 +99,5 @@ theme: cactus
 ## Docs: https://hexo.io/docs/deployment.html
 deploy:
   type: git
-  repo: https://github.com/msanatan/allan690.github.io.git
+  repo: https://github.com/allan690/allan690.github.io.git
   branch: master
