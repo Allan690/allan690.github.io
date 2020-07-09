@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="IntroductionIn the previous article, we set up an album viewer app that consumes a REST API. In this article, we will be configuring Jest and Enzyme and using them to test our application. Let’s get s">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Testing a React Application Using Jest and Enzyme - Part 2">
+<meta property="og:url" content="https://allanmogusu.tk/2020/07/09/react/testing-react-apps-with-jest-enzyme-2/index.html">
+<meta property="og:site_name" content="Allan Mogusu">
+<meta property="og:description" content="IntroductionIn the previous article, we set up an album viewer app that consumes a REST API. In this article, we will be configuring Jest and Enzyme and using them to test our application. Let’s get s">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://stackabuse.s3.amazonaws.com/media/using-jest-and-enzyme-to-test-react-applications-05.png">
+<meta property="og:image" content="https://stackabuse.s3.amazonaws.com/media/using-jest-and-enzyme-to-test-react-applications-06.png">
+<meta property="article:published_time" content="2020-07-09T07:35:00.000Z">
+<meta property="article:modified_time" content="2020-07-09T08:05:03.148Z">
+<meta property="article:author" content="Allan Mogusu">
+<meta property="article:tag" content="testing">
+<meta property="article:tag" content="jest">
+<meta property="article:tag" content="react">
+<meta property="article:tag" content="enzyme">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://stackabuse.s3.amazonaws.com/media/using-jest-and-enzyme-to-test-react-applications-05.png">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/images/favicon.ico">
+          
+        
+        
+          
+            <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+          
+        
+        
+          
+            <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+          
+        
+    
+    <!-- title -->
+    <title>Testing a React Application Using Jest and Enzyme - Part 2</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+      
+<link rel="stylesheet" href="/css/rtl.css">
+
+    
+    <!-- rss -->
+    
+    
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="https://github.com/allan690" target="_blank" rel="noopener">Projects</a></li>
+         
+          <li><a href="/contact/">Contact</a></li>
+        
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        
+        <li><a class="icon" href="/2020/07/09/react/testing-react-apps-with-jest-enzyme-1/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=https://allanmogusu.tk/2020/07/09/react/testing-react-apps-with-jest-enzyme-2/" target="_blank" rel="noopener"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=https://allanmogusu.tk/2020/07/09/react/testing-react-apps-with-jest-enzyme-2/&text=Testing a React Application Using Jest and Enzyme - Part 2" target="_blank" rel="noopener"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=https://allanmogusu.tk/2020/07/09/react/testing-react-apps-with-jest-enzyme-2/&title=Testing a React Application Using Jest and Enzyme - Part 2" target="_blank" rel="noopener"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https://allanmogusu.tk/2020/07/09/react/testing-react-apps-with-jest-enzyme-2/&is_video=false&description=Testing a React Application Using Jest and Enzyme - Part 2" target="_blank" rel="noopener"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Testing a React Application Using Jest and Enzyme - Part 2&body=Check out this article: https://allanmogusu.tk/2020/07/09/react/testing-react-apps-with-jest-enzyme-2/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=https://allanmogusu.tk/2020/07/09/react/testing-react-apps-with-jest-enzyme-2/&title=Testing a React Application Using Jest and Enzyme - Part 2" target="_blank" rel="noopener"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=https://allanmogusu.tk/2020/07/09/react/testing-react-apps-with-jest-enzyme-2/&title=Testing a React Application Using Jest and Enzyme - Part 2" target="_blank" rel="noopener"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=https://allanmogusu.tk/2020/07/09/react/testing-react-apps-with-jest-enzyme-2/&title=Testing a React Application Using Jest and Enzyme - Part 2" target="_blank" rel="noopener"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=https://allanmogusu.tk/2020/07/09/react/testing-react-apps-with-jest-enzyme-2/&title=Testing a React Application Using Jest and Enzyme - Part 2" target="_blank" rel="noopener"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=https://allanmogusu.tk/2020/07/09/react/testing-react-apps-with-jest-enzyme-2/&name=Testing a React Application Using Jest and Enzyme - Part 2&description=" target="_blank" rel="noopener"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://news.ycombinator.com/submitlink?u=https://allanmogusu.tk/2020/07/09/react/testing-react-apps-with-jest-enzyme-2/&t=Testing a React Application Using Jest and Enzyme - Part 2" target="_blank" rel="noopener"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#Introduction"><span class="toc-number">1.</span> <span class="toc-text">Introduction</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Configuring-Jest-and-Enzyme"><span class="toc-number">2.</span> <span class="toc-text">Configuring Jest and Enzyme</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Testing-the-Application-Using-Jest-and-Enzyme"><span class="toc-number">3.</span> <span class="toc-text">Testing the Application Using Jest and Enzyme</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Conclusion"><span class="toc-number">4.</span> <span class="toc-text">Conclusion</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        Testing a React Application Using Jest and Enzyme - Part 2
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">Allan Mogusu</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2020-07-09T07:35:00.000Z" itemprop="datePublished">2020-07-09</time>
+        
+      
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fas fa-archive"></i>
+        <a class="category-link" href="/categories/web/">web</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link" href="/tags/enzyme/" rel="tag">enzyme</a>, <a class="tag-link" href="/tags/jest/" rel="tag">jest</a>, <a class="tag-link" href="/tags/react/" rel="tag">react</a>, <a class="tag-link" href="/tags/testing/" rel="tag">testing</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <h3 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h3><p>In the <a rel="nofollow noopener" target="_blank" href="/2020/07/09/react/testing-react-apps-with-jest-enzyme-1">previous article</a>, we set up an album viewer app that consumes a REST API. In this article, we will be configuring Jest and Enzyme and using them to test our application.</p>
+<p>Let’s get started.</p>
+<h3 id="Configuring-Jest-and-Enzyme"><a href="#Configuring-Jest-and-Enzyme" class="headerlink" title="Configuring Jest and Enzyme"></a>Configuring Jest and Enzyme</h3><p>By default, <code>create-react-app</code> installs Jest in the application during setup, which eliminates our need to install Jest. We will only need to install Enzyme and its adapter for React version 16. Install Enzyme with either <code>npm</code> or <code>yarn</code> as follows:</p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm i -D enzyme enzyme-adapter-react-16</span><br></pre></td></tr></table></figure>
+
+<p>Or</p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yarn add enzyme enzyme-adapter-react-16 --dev</span><br></pre></td></tr></table></figure>
+
+<p>As test libraries are not required to build and run the application, we install them as development dependencies.</p>
+<p>By default, Jest doesn’t handle non-JavaScript assets. To handle imports of these assets by our tests, we will need to install the <code>jest-transform-stub</code> library as follows:</p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm i -D jest-transform-stub</span><br></pre></td></tr></table></figure>
+
+<p>Or</p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yarn add jest-transform-stub --dev</span><br></pre></td></tr></table></figure>
+
+<p>To handle conversion of Enzyme wrappers to a format compatible with Jest snapshot tests, we will also need to install the <code>enzyme-to-json</code> library:</p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm i -D enzyme-to-json</span><br></pre></td></tr></table></figure>
+
+<p>Or</p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yarn add enzyme-to-json --dev</span><br></pre></td></tr></table></figure>
+
+<p>Next, create a <code>jest.config.js</code> file at the root of the project i.e. alongside the <code>src</code> and <code>public</code> folders:</p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd .. # If you're still in the src directory, do this</span><br><span class="line">touch jest.config.js</span><br></pre></td></tr></table></figure>
+
+<p>Open the file to add the following configurations:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">    roots: [<span class="string">"&lt;rootDir&gt;/src"</span>],</span><br><span class="line">    moduleFileExtensions: [</span><br><span class="line">        <span class="string">"js"</span>,</span><br><span class="line">        <span class="string">"jsx"</span></span><br><span class="line">    ],</span><br><span class="line">    transform: &#123;</span><br><span class="line">        <span class="string">'.+\\.(css|styl|less|sass|scss|svg|png|jpg|ttf|woff|woff2)$'</span>: <span class="string">'jest-transform-stub'</span>,</span><br><span class="line">        <span class="string">'^.+\\.jsx?$'</span>: <span class="string">"&lt;rootDir&gt;/node_modules/babel-jest"</span></span><br><span class="line">    &#125;,</span><br><span class="line">    snapshotSerializers: [<span class="string">"enzyme-to-json/serializer"</span>],</span><br><span class="line">    setupFilesAfterEnv: [</span><br><span class="line">        <span class="string">"&lt;rootDir&gt;/src/setupTests.js"</span></span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>The <code>roots</code> option in our jest config specifies the list of directories that Jest will search for test files, in our case, it will search in the <code>src</code> directory.</p>
+<p>The <code>moduleFileExtensions</code> option contains an array of file extensions that our test modules use. In our case, we are only using <code>js</code> and <code>jsx</code> extensions.</p>
+<p>The <code>transform</code> object has transformers, i.e modules that transform source files. In our case, we are using <code>babel-jest</code> to transform JavaScript code into a backwards-compatible version of JavaScript, and <code>jest-transform-stub</code> to transform our assets.</p>
+<p>The <code>snapshotSerializers</code> option allows us to specify an array of paths to snapshot serializer modules. In our case, we pass the path to the <code>enzyme-to-json</code> serializer.</p>
+<p>The <code>setupFilesAfterEnv</code> option allows us to specify a list of paths to modules that contain code to set up our testing framework. In our case, we pass the path to the file that sets up our enzyme configuration.</p>
+<p>By default, Jest expects standard JavaScript. The code we write in our React components, JSX, would not be recognized by our tests. We need add the appropriate <a rel="nofollow noopener" target="_blank" href="https://babeljs.io/">Babel</a> configuration, which would compile the JSX code into standard JavaScript when Jest runs its test.</p>
+<p>Create a new file, <code>babel.config.js</code>, to store your Babel configuration:</p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">touch babel.config.js</span><br></pre></td></tr></table></figure>
+
+<p>And add the following to it:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">    presets: [<span class="string">'@babel/preset-env'</span>, <span class="string">'@babel/preset-react'</span>],</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>Now our Jest tests can work with React code!</p>
+<p>With our Jest configuration done, we now have to configure Enzyme. In your <code>src</code> folder, let’s edit the <code>setupTests.js</code> file that we referenced in the <code>jest.config.js</code> file. You’ll update it to use Enzyme.</p>
+<p>Open <code>setupTests.js</code> in the <code>src</code> directory:</p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cd src</span><br></pre></td></tr></table></figure>
+
+<p>And replace the code with this:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; configure &#125; <span class="keyword">from</span> <span class="string">'enzyme'</span>;</span><br><span class="line"><span class="keyword">import</span> Adapter <span class="keyword">from</span> <span class="string">'enzyme-adapter-react-16'</span>;</span><br><span class="line"></span><br><span class="line">configure(&#123; <span class="attr">adapter</span>: <span class="keyword">new</span> Adapter() &#125;);</span><br></pre></td></tr></table></figure>
+
+<p>Finally, change the test script in <code>package.json</code> to simply say <code>jest</code>:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">"scripts"</span>: &#123;</span><br><span class="line">  <span class="string">"start"</span>: <span class="string">"react-scripts start"</span>,</span><br><span class="line">  <span class="string">"build"</span>: <span class="string">"react-scripts build"</span>,</span><br><span class="line">  <span class="string">"test"</span>: <span class="string">"jest"</span>,</span><br><span class="line">  <span class="string">"eject"</span>: <span class="string">"react-scripts eject"</span></span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure>
+
+<p>We have completed our Jest and Enzyme setup. Let’s do a simple test to verify that our configuration is working as expected.</p>
+<p>Before we can test, let’s first remove the <code>App.test.js</code> file as it uses a different testing library from Jest and will cause errors when running:</p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rm -f App.test.js</span><br></pre></td></tr></table></figure>
+
+<p>Inside the <code>components</code> folder create a <code>__tests__</code> folder and move into that directory:</p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd components &amp;&amp; mkdir __tests__</span><br><span class="line">cd __tests__</span><br></pre></td></tr></table></figure>
+
+<p>Create a file called <code>add.spec.js</code>:</p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">touch add.spec.js</span><br></pre></td></tr></table></figure>
+
+<p>And add the code below:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">describe(<span class="string">'sum'</span>, () =&gt; &#123;</span><br><span class="line">    it(<span class="string">'adds 2 numbers'</span>, () =&gt; &#123;</span><br><span class="line">        expect(<span class="number">2</span> + <span class="number">2</span>).toEqual(<span class="number">4</span>)</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>This test confirms that 2 + 2 is equal 4, true for ideally every programming language. Now run the test by entering either one of these commands:</p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm test</span><br></pre></td></tr></table></figure>
+
+<p>Or</p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yarn test</span><br></pre></td></tr></table></figure>
+
+<p>The test should pass showing this output (test time might differ):</p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"> PASS  src/components/__tests__/add.spec.js</span><br><span class="line">  sum</span><br><span class="line">    ✓ adds 2 numbers (2ms)</span><br><span class="line"></span><br><span class="line">Test Suites: 1 passed, 1 total</span><br><span class="line">Tests:       1 passed, 1 total</span><br><span class="line">Snapshots:   0 total</span><br><span class="line">Time:        1.471s, estimated 3s</span><br></pre></td></tr></table></figure>
+
+<p>Having set up the test framework successfully, you can delete the test file:</p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rm -f add.spec.js</span><br></pre></td></tr></table></figure>
+
+<p>Let us now proceed to test our application using Jest and Enzyme.</p>
+<h3 id="Testing-the-Application-Using-Jest-and-Enzyme"><a href="#Testing-the-Application-Using-Jest-and-Enzyme" class="headerlink" title="Testing the Application Using Jest and Enzyme"></a>Testing the Application Using Jest and Enzyme</h3><p>We want our test to confirm the following app behaviors:</p>
+<ol>
+<li>Our <code>Album</code> component renders photos passed to it correctly.</li>
+<li>That each photo in the album receives its required props.</li>
+<li>Photos are fetched by default when the input component mounts.</li>
+<li>Changing the ID in the input box, and clicking on the search button triggers an HTTP call to fetch photos.</li>
+</ol>
+<p>To test our first 2 actions, create a file named <code>AlbumComponent.test.js</code> inside the <code>__tests__</code> folder:</p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">touch AlbumComponent.test.js</span><br></pre></td></tr></table></figure>
+
+<p>Enter the following code in <code>AlbumComponent.test.js</code>:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> React <span class="keyword">from</span> <span class="string">"react"</span>;</span><br><span class="line"><span class="keyword">import</span> AlbumComponent <span class="keyword">from</span> <span class="string">"../AlbumComponent"</span>;</span><br><span class="line"><span class="keyword">import</span> Photo <span class="keyword">from</span> <span class="string">"../PhotoComponent"</span>;</span><br><span class="line"><span class="keyword">import</span> &#123; usePhotoState &#125; <span class="keyword">from</span> <span class="string">"../../context"</span>;</span><br><span class="line"><span class="keyword">import</span> &#123; shallow &#125; <span class="keyword">from</span> <span class="string">"enzyme"</span>;</span><br><span class="line"></span><br><span class="line">jest.mock(<span class="string">"../../context"</span>);</span><br><span class="line"></span><br><span class="line">describe(<span class="string">"AlbumComponent"</span>, () =&gt; &#123;</span><br><span class="line">    <span class="keyword">const</span> photosArray = [</span><br><span class="line">        &#123;</span><br><span class="line">            albumId: <span class="number">1</span>,</span><br><span class="line">            id: <span class="number">1</span>,</span><br><span class="line">            title: <span class="string">"accusamus beatae ad facilis cum similique qui sunt"</span>,</span><br><span class="line">            url: <span class="string">"https://via.placeholder.com/600/92c952"</span>,</span><br><span class="line">            thumbnailUrl: <span class="string">"https://via.placeholder.com/150/92c952"</span>,</span><br><span class="line">        &#125;,</span><br><span class="line">        &#123;</span><br><span class="line">            albumId: <span class="number">1</span>,</span><br><span class="line">            id: <span class="number">2</span>,</span><br><span class="line">            title: <span class="string">"reprehenderit est deserunt velit ipsam"</span>,</span><br><span class="line">            url: <span class="string">"https://via.placeholder.com/600/771796"</span>,</span><br><span class="line">            thumbnailUrl: <span class="string">"https://via.placeholder.com/150/771796"</span>,</span><br><span class="line">        &#125;,</span><br><span class="line">        &#123;</span><br><span class="line">            albumId: <span class="number">1</span>,</span><br><span class="line">            id: <span class="number">3</span>,</span><br><span class="line">            title: <span class="string">"officia porro iure quia iusto qui ipsa ut modi"</span>,</span><br><span class="line">            url: <span class="string">"https://via.placeholder.com/600/24f355"</span>,</span><br><span class="line">            thumbnailUrl: <span class="string">"https://via.placeholder.com/150/24f355"</span>,</span><br><span class="line">        &#125;,</span><br><span class="line">    ];</span><br><span class="line"></span><br><span class="line">    beforeEach(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">        usePhotoState.mockReturnValue(&#123;</span><br><span class="line">            photos: photosArray,</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    afterEach(<span class="function"><span class="params">()</span> =&gt;</span> jest.resetAllMocks());</span><br><span class="line"></span><br><span class="line">    it(<span class="string">"renders photo album correctly"</span>, () =&gt; &#123;</span><br><span class="line">        <span class="keyword">const</span> wrapper = shallow(<span class="xml"><span class="tag">&lt;<span class="name">AlbumComponent</span> /&gt;</span></span>);</span><br><span class="line">        expect(wrapper).toMatchSnapshot();</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    it(<span class="string">'contains album and photos'</span>, () =&gt; &#123;</span><br><span class="line">        <span class="keyword">const</span> wrapper = shallow(<span class="xml"><span class="tag">&lt;<span class="name">AlbumComponent</span> /&gt;</span></span>);</span><br><span class="line">        expect(wrapper.find(<span class="string">".album"</span>)).toHaveLength(<span class="number">1</span>);</span><br><span class="line">        expect(wrapper.contains(<span class="xml"><span class="tag">&lt;<span class="name">Photo</span> &#123;<span class="attr">...photosArray</span>[<span class="attr">0</span>]&#125; /&gt;</span></span>)).toEqual(<span class="literal">true</span>);</span><br><span class="line">        expect(wrapper.contains(<span class="xml"><span class="tag">&lt;<span class="name">Photo</span> &#123;<span class="attr">...photosArray</span>[<span class="attr">1</span>]&#125; /&gt;</span></span>)).toEqual(<span class="literal">true</span>);</span><br><span class="line">        expect(wrapper.contains(<span class="xml"><span class="tag">&lt;<span class="name">Photo</span> &#123;<span class="attr">...photosArray</span>[<span class="attr">2</span>]&#125; /&gt;</span></span>)).toEqual(<span class="literal">true</span>);</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>In the above code, we first import <code>React</code>, our <code>Album</code> and <code>Photo</code> components as dependencies. We also import our <code>usePhotoState()</code> custom hook from our context and the <code>shallow()</code> method from the Enzyme library.</p>
+<p>Since we do not want to make an actual HTTP call to our API, we mock our context and stub our <code>usePhotoState()</code> custom hook in the <code>beforeEach()</code> block to return an array of photos. In the <code>afterEach()</code> block, we reset all our mocks to their initial state.</p>
+<p>Our first test case performs a snapshot test, to check that our UI does not change unexpectedly and that it renders correctly. To do this we use Enzyme’s shallow rendering API. To use it, we pass our component as an argument of the <code>shallow()</code> method. The <code>shallow()</code> method returns a shallow wrapper which we can then assert to check if it matches the snapshot of our UI.</p>
+<p>In our second test case, we check the render tree of our wrapper for a selector called <code>.album</code> and expect it to occur only once. We also check that our tree contains 3 <code>Photo</code> nodes, corresponding to each object of our photo array.</p>
+<p>To test that this works as expected, we can run our tests in the terminal:</p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm test</span><br></pre></td></tr></table></figure>
+
+<p>Or</p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yarn test</span><br></pre></td></tr></table></figure>
+
+<p>You should get results similar to this. Results may vary depending on the machine used:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"> PASS  src/components/__tests__/AlbumComponent.spec.js</span><br><span class="line">  AlbumComponent</span><br><span class="line">    ✓ renders photo album correctly (8ms)</span><br><span class="line">    ✓ contains album and photos (6ms)</span><br><span class="line"></span><br><span class="line">› 1 snapshot written.</span><br><span class="line">Test Suites: 1 passed, 1 total</span><br><span class="line">Tests:       2 passed, 2 total</span><br><span class="line">Snapshots:   1 written, 1 total</span><br><span class="line">Time:        2.641s</span><br></pre></td></tr></table></figure>
+
+
+<p>Let us now write tests for our input component. Create another file inside the <code>__tests__</code> folder and name it <code>InputComponent.test.js</code>:</p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">touch InputComponent.test.js</span><br></pre></td></tr></table></figure>
+
+<p>Write the code below into <code>InputComponent.test.js</code>:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> React <span class="keyword">from</span> <span class="string">'react'</span>;</span><br><span class="line"><span class="keyword">import</span> InputComponent <span class="keyword">from</span> <span class="string">'../InputComponent'</span>;</span><br><span class="line"><span class="keyword">import</span> &#123; shallow &#125; <span class="keyword">from</span> <span class="string">'enzyme'</span>;</span><br><span class="line"><span class="keyword">import</span> &#123; usePhotoActions &#125; <span class="keyword">from</span> <span class="string">'../../context'</span>;</span><br><span class="line"></span><br><span class="line">jest.mock(<span class="string">'../../context'</span>);</span><br><span class="line"></span><br><span class="line">describe(<span class="string">'InputComponent'</span>, () =&gt; &#123;</span><br><span class="line">    <span class="keyword">let</span> fetchPhotos = jest.fn();</span><br><span class="line"></span><br><span class="line">    beforeEach(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">        usePhotoActions.mockReturnValue(&#123;</span><br><span class="line">            fetchPhotos</span><br><span class="line">        &#125;);</span><br><span class="line">        jest.spyOn(React, <span class="string">'useEffect'</span>);</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    afterEach(<span class="function"><span class="params">()</span> =&gt;</span> jest.resetAllMocks());</span><br><span class="line"></span><br><span class="line">    it(<span class="string">'renders input component'</span>, () =&gt; &#123;</span><br><span class="line">        <span class="keyword">const</span> wrapper = shallow(<span class="xml"><span class="tag">&lt;<span class="name">InputComponent</span> /&gt;</span></span>);</span><br><span class="line">        expect(wrapper).toMatchSnapshot()</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    it(<span class="string">'renders search, input and button components'</span>, () =&gt; &#123;</span><br><span class="line">        <span class="keyword">const</span> wrapper = shallow(<span class="xml"><span class="tag">&lt;<span class="name">InputComponent</span> /&gt;</span></span>);</span><br><span class="line">        expect(wrapper.find(<span class="string">'.search'</span>)).toHaveLength(<span class="number">1</span>);</span><br><span class="line">        expect(wrapper.find(<span class="string">'input'</span>)).toHaveLength(<span class="number">1</span>);</span><br><span class="line">        expect(wrapper.find(<span class="string">'button'</span>)).toHaveLength(<span class="number">1</span>);</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    it(<span class="string">'fetches photos on component mount'</span>, () =&gt; &#123;</span><br><span class="line">        shallow(<span class="xml"><span class="tag">&lt;<span class="name">InputComponent</span> /&gt;</span></span>);</span><br><span class="line">        expect(React.useEffect.mock.calls[<span class="number">0</span>][<span class="number">0</span>]).toEqual(expect.any(<span class="built_in">Function</span>));</span><br><span class="line">        expect(React.useEffect.mock.calls[<span class="number">0</span>][<span class="number">1</span>]).toEqual([]);</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    it(<span class="string">'fetches Photos when button is clicked'</span>, () =&gt; &#123;</span><br><span class="line">        <span class="keyword">const</span> wrapper = shallow(<span class="xml"><span class="tag">&lt;<span class="name">InputComponent</span> /&gt;</span></span>);</span><br><span class="line">        wrapper.find(<span class="string">'input'</span>).simulate(<span class="string">'change'</span>, &#123; <span class="attr">target</span>: &#123; <span class="attr">value</span>: <span class="string">'3'</span> &#125; &#125;);</span><br><span class="line">        wrapper.find(<span class="string">'button'</span>).simulate(<span class="string">'click'</span>);</span><br><span class="line">        expect(fetchPhotos).toHaveBeenCalledWith(<span class="number">3</span>);</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>We begin this test by importing <code>React</code>, our <code>Input</code> component and the <code>shallow()</code> method from Enzyme as dependencies. We also import our <code>usePhotoActions()</code> custom hook.</p>
+<p>We mock our context (shared state) and stub the <code>fetchPhotos()</code> method returned by our <code>usePhotoActions()</code> custom hook. We also create a <em>spy</em> for the <code>useEffect()</code> hook in the <code>beforeEach()</code> block. After each test, we reset all our mocks as specified in the <code>afterEach()</code> block.</p>
+<p>Our first test case, “renders input component”, is a snapshot test. It checks that what’s rendered matches our snapshot, a recording of what components are displayed on the screen by Jest.</p>
+<p>The second test case, “renders search, input and button components”, similarly checks that the render tree of the wrapper has nodes with selectors named <code>.search</code>, <code>input</code> and <code>button</code> respectively.</p>
+<p>Our third test case, “fetches photos on component mount”, checks that the <code>useEffect()</code> hook is called with a function as the first argument and an empty array of dependencies as the second. We use the <code>expect.Any()</code> asymmetric matcher, since deep-equality matchers like <code>.toEqual()</code> compare functions according to <em>referential identity</em> which means they will throw an inequality error and fail our tests. To learn more about this, you can see this issue on the Jest repo <a rel="nofollow noopener" target="_blank" href="https://github.com/facebook/jest/issues/8475">here</a>.</p>
+<p>Our final test case, “fetches Photos when button is clicked”, simulates an <code>onChange</code> event on the input field, and sets its value to <code>3</code>. It also simulates a button click event. We then expect our <code>fetchPhotos()</code> method to have been called with an argument of 3.</p>
+<p>Run the tests for this individual file using:</p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">node /path/to/node_modules/.bin/jest /path/to/project/src/components/__tests__/InputComponent.test.js</span><br></pre></td></tr></table></figure>
+
+<p>This way we see the result of all the tests cases for this particular file. You will see the results similar to:</p>
+<p><img src="https://stackabuse.s3.amazonaws.com/media/using-jest-and-enzyme-to-test-react-applications-05.png" alt="Screenshot of console output showing the Input component tests successfully passing"></p>
+<p><strong>Note:</strong> the individual test would only work if you’re running it in a directory where Jest is configured with Babel. Therefore, without further edits the above command only works in the root project directory.</p>
+<p>Let’s run the entire test suite. In your terminal, run one of the test commands:</p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm test</span><br></pre></td></tr></table></figure>
+
+<p>Or</p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yarn test</span><br></pre></td></tr></table></figure>
+
+<p>Your tests should pass as shown below:</p>
+<p><img src="https://stackabuse.s3.amazonaws.com/media/using-jest-and-enzyme-to-test-react-applications-06.png" alt="Screenshot of console output showing all component tests successfully passing"></p>
+<h3 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h3><p>In this article, we were able to create a React application that makes an HTTP call to a REST API to display photos on the browser. We were able to see how we can set up a React app using <code>create-react-app</code> and <code>npx</code> and configured <code>axios</code> as our HTTP client.</p>
+<p>After creating the application, we configured Jest and Enzyme so we can write unit for the <code>Album</code> and <code>Input</code> React components. With Enzyme and Jest, we were able to test how the components behaved and what they displayed.</p>
+<p>To read more concerning how you can leverage Jest and Enzyme to test you React application, you can check out the <a rel="nofollow noopener" target="_blank" href="https://jestjs.io/docs/en/getting-started">official Jest documentation</a> and <a rel="nofollow noopener" target="_blank" href="https://enzymejs.github.io/enzyme/">official Enzyme documentation</a> respectively.</p>
+<p>The code for this application can be accessed on the repo <a rel="nofollow noopener" target="_blank" href="https://github.com/Allan690/PhotoAlbumReact">here</a>.</p>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="https://github.com/allan690" target="_blank" rel="noopener">Projects</a></li>
+         
+          <li><a href="/contact/">Contact</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#Introduction"><span class="toc-number">1.</span> <span class="toc-text">Introduction</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Configuring-Jest-and-Enzyme"><span class="toc-number">2.</span> <span class="toc-text">Configuring Jest and Enzyme</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Testing-the-Application-Using-Jest-and-Enzyme"><span class="toc-number">3.</span> <span class="toc-text">Testing the Application Using Jest and Enzyme</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Conclusion"><span class="toc-number">4.</span> <span class="toc-text">Conclusion</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=https://allanmogusu.tk/2020/07/09/react/testing-react-apps-with-jest-enzyme-2/" target="_blank" rel="noopener"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=https://allanmogusu.tk/2020/07/09/react/testing-react-apps-with-jest-enzyme-2/&text=Testing a React Application Using Jest and Enzyme - Part 2" target="_blank" rel="noopener"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=https://allanmogusu.tk/2020/07/09/react/testing-react-apps-with-jest-enzyme-2/&title=Testing a React Application Using Jest and Enzyme - Part 2" target="_blank" rel="noopener"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https://allanmogusu.tk/2020/07/09/react/testing-react-apps-with-jest-enzyme-2/&is_video=false&description=Testing a React Application Using Jest and Enzyme - Part 2" target="_blank" rel="noopener"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Testing a React Application Using Jest and Enzyme - Part 2&body=Check out this article: https://allanmogusu.tk/2020/07/09/react/testing-react-apps-with-jest-enzyme-2/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=https://allanmogusu.tk/2020/07/09/react/testing-react-apps-with-jest-enzyme-2/&title=Testing a React Application Using Jest and Enzyme - Part 2" target="_blank" rel="noopener"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=https://allanmogusu.tk/2020/07/09/react/testing-react-apps-with-jest-enzyme-2/&title=Testing a React Application Using Jest and Enzyme - Part 2" target="_blank" rel="noopener"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=https://allanmogusu.tk/2020/07/09/react/testing-react-apps-with-jest-enzyme-2/&title=Testing a React Application Using Jest and Enzyme - Part 2" target="_blank" rel="noopener"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=https://allanmogusu.tk/2020/07/09/react/testing-react-apps-with-jest-enzyme-2/&title=Testing a React Application Using Jest and Enzyme - Part 2" target="_blank" rel="noopener"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=https://allanmogusu.tk/2020/07/09/react/testing-react-apps-with-jest-enzyme-2/&name=Testing a React Application Using Jest and Enzyme - Part 2&description=" target="_blank" rel="noopener"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://news.ycombinator.com/submitlink?u=https://allanmogusu.tk/2020/07/09/react/testing-react-apps-with-jest-enzyme-2/&t=Testing a React Application Using Jest and Enzyme - Part 2" target="_blank" rel="noopener"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2020
+    Allan Mogusu
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="https://github.com/allan690" target="_blank" rel="noopener">Projects</a></li>
+         
+          <li><a href="/contact/">Contact</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+
+<link rel="stylesheet" href="/lib/justified-gallery/css/justifiedGallery.min.css">
+
+
+    <!-- jquery -->
+
+<script src="/lib/jquery/jquery.min.js"></script>
+
+
+<script src="/lib/justified-gallery/js/jquery.justifiedGallery.min.js"></script>
+
+<!-- clipboard -->
+
+  
+<script src="/lib/clipboard/clipboard.min.js"></script>
+
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="far fa-clone"></i>';
+    btn += '</span>'; 
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Disqus Comments -->
+
+
+</body>
+</html>

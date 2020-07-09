@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="IntroductionJest is a popular JavaScript testing library. Open-sourced by Facebook in 2015, we can use Jest to test many the test logical and visual components of our application. In this article, we">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Testing a React Application Using Jest and Enzyme - Part 1">
+<meta property="og:url" content="https://allanmogusu.tk/2020/07/09/react/testing-react-apps-with-jest-enzyme-1/index.html">
+<meta property="og:site_name" content="Allan Mogusu">
+<meta property="og:description" content="IntroductionJest is a popular JavaScript testing library. Open-sourced by Facebook in 2015, we can use Jest to test many the test logical and visual components of our application. In this article, we">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://stackabuse.s3.amazonaws.com/media/using-jest-and-enzyme-to-test-react-applications-01.png">
+<meta property="og:image" content="https://stackabuse.s3.amazonaws.com/media/using-jest-and-enzyme-to-test-react-applications-02.png">
+<meta property="og:image" content="https://stackabuse.s3.amazonaws.com/media/using-jest-and-enzyme-to-test-react-applications-03.png">
+<meta property="og:image" content="https://stackabuse.s3.amazonaws.com/media/using-jest-and-enzyme-to-test-react-applications-04.png">
+<meta property="article:published_time" content="2020-07-09T07:30:00.000Z">
+<meta property="article:modified_time" content="2020-07-09T08:06:06.558Z">
+<meta property="article:author" content="Allan Mogusu">
+<meta property="article:tag" content="testing">
+<meta property="article:tag" content="jest">
+<meta property="article:tag" content="react">
+<meta property="article:tag" content="enzyme">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://stackabuse.s3.amazonaws.com/media/using-jest-and-enzyme-to-test-react-applications-01.png">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/images/favicon.ico">
+          
+        
+        
+          
+            <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+          
+        
+        
+          
+            <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+          
+        
+    
+    <!-- title -->
+    <title>Testing a React Application Using Jest and Enzyme - Part 1</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+      
+<link rel="stylesheet" href="/css/rtl.css">
+
+    
+    <!-- rss -->
+    
+    
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="https://github.com/allan690" target="_blank" rel="noopener">Projects</a></li>
+         
+          <li><a href="/contact/">Contact</a></li>
+        
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" href="/2020/07/09/react/testing-react-apps-with-jest-enzyme-2/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" href="/2020/06/11/deploying-flask-app-to-k8s-aws-part-1/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=https://allanmogusu.tk/2020/07/09/react/testing-react-apps-with-jest-enzyme-1/" target="_blank" rel="noopener"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=https://allanmogusu.tk/2020/07/09/react/testing-react-apps-with-jest-enzyme-1/&text=Testing a React Application Using Jest and Enzyme - Part 1" target="_blank" rel="noopener"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=https://allanmogusu.tk/2020/07/09/react/testing-react-apps-with-jest-enzyme-1/&title=Testing a React Application Using Jest and Enzyme - Part 1" target="_blank" rel="noopener"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https://allanmogusu.tk/2020/07/09/react/testing-react-apps-with-jest-enzyme-1/&is_video=false&description=Testing a React Application Using Jest and Enzyme - Part 1" target="_blank" rel="noopener"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Testing a React Application Using Jest and Enzyme - Part 1&body=Check out this article: https://allanmogusu.tk/2020/07/09/react/testing-react-apps-with-jest-enzyme-1/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=https://allanmogusu.tk/2020/07/09/react/testing-react-apps-with-jest-enzyme-1/&title=Testing a React Application Using Jest and Enzyme - Part 1" target="_blank" rel="noopener"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=https://allanmogusu.tk/2020/07/09/react/testing-react-apps-with-jest-enzyme-1/&title=Testing a React Application Using Jest and Enzyme - Part 1" target="_blank" rel="noopener"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=https://allanmogusu.tk/2020/07/09/react/testing-react-apps-with-jest-enzyme-1/&title=Testing a React Application Using Jest and Enzyme - Part 1" target="_blank" rel="noopener"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=https://allanmogusu.tk/2020/07/09/react/testing-react-apps-with-jest-enzyme-1/&title=Testing a React Application Using Jest and Enzyme - Part 1" target="_blank" rel="noopener"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=https://allanmogusu.tk/2020/07/09/react/testing-react-apps-with-jest-enzyme-1/&name=Testing a React Application Using Jest and Enzyme - Part 1&description=" target="_blank" rel="noopener"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://news.ycombinator.com/submitlink?u=https://allanmogusu.tk/2020/07/09/react/testing-react-apps-with-jest-enzyme-1/&t=Testing a React Application Using Jest and Enzyme - Part 1" target="_blank" rel="noopener"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#Introduction"><span class="toc-number">1.</span> <span class="toc-text">Introduction</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Creating-a-Photo-Album-Viewer-app-in-React"><span class="toc-number">2.</span> <span class="toc-text">Creating a Photo Album Viewer app in React</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Initializing-React"><span class="toc-number">2.1.</span> <span class="toc-text">Initializing React</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Making-Photo-and-Album-Components"><span class="toc-number">2.2.</span> <span class="toc-text">Making Photo and Album Components</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Adding-Axios-for-HTTP-Requests"><span class="toc-number">2.3.</span> <span class="toc-text">Adding Axios for HTTP Requests</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Setting-up-React-Context"><span class="toc-number">2.4.</span> <span class="toc-text">Setting up React Context</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Conclusion"><span class="toc-number">3.</span> <span class="toc-text">Conclusion</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        Testing a React Application Using Jest and Enzyme - Part 1
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">Allan Mogusu</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2020-07-09T07:30:00.000Z" itemprop="datePublished">2020-07-09</time>
+        
+      
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fas fa-archive"></i>
+        <a class="category-link" href="/categories/web/">web</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link" href="/tags/enzyme/" rel="tag">enzyme</a>, <a class="tag-link" href="/tags/jest/" rel="tag">jest</a>, <a class="tag-link" href="/tags/react/" rel="tag">react</a>, <a class="tag-link" href="/tags/testing/" rel="tag">testing</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <h3 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h3><p><a rel="nofollow noopener" target="_blank" href="https://jestjs.io">Jest</a> is a popular JavaScript testing library. Open-sourced by Facebook in 2015, we can use Jest to test many the test logical and visual components of our application.</p>
+<p>In this article, we will be looking at how we can use Jest to test a <a rel="nofollow noopener" target="_blank" href="https://reactjs.org">React</a> application that consumes a REST API. To do this, we will be using Jest in combination with <a rel="nofollow noopener" target="_blank" href="https://enzymejs.github.io/enzyme/">Enzyme</a>, a utility for React that makes it easier to test React components.</p>
+<p>In this article, we will create a React application that displays a photo album using data from an HTTP API. In the next, We’ll set up and use Jest and Enzyme to test our application’s handling of the HTTP requests and responses as well as what components it renders to the user.</p>
+<p>Let’s begin by setting up our application.</p>
+<h3 id="Creating-a-Photo-Album-Viewer-app-in-React"><a href="#Creating-a-Photo-Album-Viewer-app-in-React" class="headerlink" title="Creating a Photo Album Viewer app in React"></a>Creating a Photo Album Viewer app in React</h3><h4 id="Initializing-React"><a href="#Initializing-React" class="headerlink" title="Initializing React"></a>Initializing React</h4><p>To set up the application, we will bootstrap it with <code>create-react-app</code> - a CLI tool that configures React applications so that they can be easily debugged and built for production. Run the following command in the terminal:</p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npx create-react-app photo-album-jest</span><br></pre></td></tr></table></figure>
+
+<p><a rel="nofollow noopener" target="_blank" href="https://medium.com/@maybekatz/introducing-npx-an-npm-package-runner-55f7d4bd282b">npx</a>, is a node package runner that allows us to run commands without necessarily installing them. In our case, it allows us to use the <code>create-react-app</code> command, without installing the library.</p>
+<p><strong>Note</strong>: Depending on your Internet connection and computer speed, this command may take a while to complete.</p>
+<p>Running the command creates a React app with the following structure:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">.</span><br><span class="line">├── README.md</span><br><span class="line">├── package.json</span><br><span class="line">├── public</span><br><span class="line">│   ├── favicon.ico</span><br><span class="line">│   ├── index.html</span><br><span class="line">│   ├── logo192.png</span><br><span class="line">│   ├── logo512.png</span><br><span class="line">│   ├── manifest.json</span><br><span class="line">│   └── robots.txt</span><br><span class="line">├── src</span><br><span class="line">│   ├── App.css</span><br><span class="line">│   ├── App.js</span><br><span class="line">│   ├── App.test.js</span><br><span class="line">│   ├── index.css</span><br><span class="line">│   ├── index.js</span><br><span class="line">│   ├── logo.svg</span><br><span class="line">│   ├── serviceWorker.js</span><br><span class="line">│   └── setupTests.js</span><br><span class="line">└── yarn.lock</span><br></pre></td></tr></table></figure>
+
+<p>The <code>public</code> folder contains the HTML file, whose properties you can modify, for example, to set the title of the page. The <code>&lt;script&gt;</code> tag and compiled code are added to this HTML file during the React build process. </p>
+<p>The <code>robots.txt</code> file inside the <code>public</code> folder, informs web crawlers which pages of your site they are allowed or disallowed to access. You can learn more about it <a rel="nofollow noopener" target="_blank" href="https://support.google.com/webmasters/answer/6062608?hl=en">here</a>.</p>
+<p>The <code>src</code> folder contains the source code for our application. This is where we will write the logic to retrieve the photos from the API and display them to the user. It’s also where our test files will live. The <code>index.js</code> file serves as the entry point for our application, while the <code>App.js</code> file contains an example React component which is imported in the <code>index.js</code> file.</p>
+<p>The <code>serviceWorker.js</code> file includes an optional service worker for your app. You can use this service worker to cache files and data and increase the loading speed of your app on subsequent visits.</p>
+<p>By default, <code>create-react-app</code> ships with the <a rel="nofollow noopener" target="_blank" href="https://testing-library.com/docs/react-testing-library/intro">React Testing library</a>, a lightweight solution that does well to test the output of created by components. In this tutorial, however, we will be using Jest and Enzyme instead.</p>
+<p>To start the application, you can run the following command in your terminal:</p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm start</span><br></pre></td></tr></table></figure>
+
+<p>If you have the <a rel="nofollow noopener" target="_blank" href="https://yarnpkg.com/">yarn</a> package manager installed, you can alternatively use:</p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yarn start</span><br></pre></td></tr></table></figure>
+
+<p>You should get output that is similar to this:</p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Compiled successfully!</span><br><span class="line"></span><br><span class="line">You can now view photo-album-react in the browser.</span><br><span class="line"></span><br><span class="line">  Local:            http://localhost:3000</span><br><span class="line">  On Your Network:  http://192.168.0.11:3000</span><br><span class="line"></span><br><span class="line">Note that the development build is not optimized.</span><br><span class="line">To create a production build, use yarn build.</span><br></pre></td></tr></table></figure>
+
+<p>Depending on your OS, your browser may automatically pop up when the development server starts. If not, you can visit <code>http://localhost:3000</code> in your browser and see this page:</p>
+<p><img src="https://stackabuse.s3.amazonaws.com/media/using-jest-and-enzyme-to-test-react-applications-01.png" alt="Screenshot of initialized react application displaying its logo"></p>
+<p>We have created our application successfully. Let us now proceed to write the code for our application.</p>
+<h4 id="Making-Photo-and-Album-Components"><a href="#Making-Photo-and-Album-Components" class="headerlink" title="Making Photo and Album Components"></a>Making Photo and Album Components</h4><p>We will create a <code>components</code> folder inside the <code>src</code> folder to contain our React components. It’s good practice to develop and maintain components in isolation, as they are meant to be single blocks of UI and logic.</p>
+<p>Additionally, we will also create an <code>assets</code> folder which will have our CSS files and images. Let’s create our new folders:</p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cd src &amp;&amp; mkdir components assets</span><br></pre></td></tr></table></figure>
+
+<p>Inside the <code>components</code> folder, create a file and call it <code>PhotoComponent.js</code>. This file will have our React code for how a photo should look like.</p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cd components &amp;&amp; touch PhotoComponent.js</span><br></pre></td></tr></table></figure>
+
+<p>Inside the <code>PhotoComponent.js</code> file, enter the following code:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> React <span class="keyword">from</span> <span class="string">"react"</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> Photo = <span class="function">(<span class="params">&#123; thumbnailUrl, id, title &#125;</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> (</span><br><span class="line">        &lt;div className=<span class="string">"photo"</span>&gt;</span><br><span class="line">            &lt;img className=<span class="string">"photo-url"</span> src=&#123;thumbnailUrl&#125; alt=<span class="string">"photoUrl"</span> /&gt;</span><br><span class="line">            &lt;span className=<span class="string">"photo-id"</span>&gt; &#123;id&#125; &lt;<span class="regexp">/span&gt;</span></span><br><span class="line"><span class="regexp">            &lt;span className="photo-title"&gt; &#123;title&#125; &lt;/</span>span&gt;</span><br><span class="line">        &lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">    );</span></span><br><span class="line"><span class="regexp">&#125;;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">export default Photo;</span></span><br></pre></td></tr></table></figure>
+
+<p>In the above piece of code, we create a stateless functional component that accepts 3 props namely, <code>thumbnailUrl</code>, <code>id</code> and <code>title</code>. Those props are used to render an HTML <code>div</code> with 3 children.</p>
+<p>To style our Photo component, we will create a CSS file in a new <code>css</code> subfolder in the <code>assets</code> folder and name it <code>PhotoComponent.css</code>:</p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd ../assets &amp;&amp; mkdir css</span><br><span class="line">cd css &amp;&amp; touch PhotoComponent.css</span><br></pre></td></tr></table></figure>
+
+<p>Open <code>PhotoComponent.css</code> in your editor and enter the following code:</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.photo</span> &#123;</span><br><span class="line">    <span class="attribute">display</span>: flex;</span><br><span class="line">    <span class="attribute">flex-direction</span>: column;</span><br><span class="line">    <span class="attribute">margin-left</span>: <span class="number">20px</span>;</span><br><span class="line">    <span class="attribute">margin-top</span>: <span class="number">20px</span>;</span><br><span class="line">    <span class="attribute">width</span>: <span class="number">300px</span>;</span><br><span class="line">    <span class="attribute">height</span>: <span class="number">300px</span>;</span><br><span class="line">    <span class="attribute">border</span>: <span class="number">3px</span> solid <span class="number">#393939</span>;</span><br><span class="line">    <span class="attribute">border-radius</span>: <span class="number">20px</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.photo-url</span> &#123;</span><br><span class="line">    <span class="attribute">max-width</span>: <span class="number">100%</span>;</span><br><span class="line">    <span class="attribute">max-height</span>: <span class="number">100%</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.photo-id</span> &#123;</span><br><span class="line">    <span class="attribute">margin</span>: auto;</span><br><span class="line">    <span class="attribute">font-size</span>: <span class="number">24px</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.photo-title</span> &#123;</span><br><span class="line">    <span class="attribute">margin</span>: auto;</span><br><span class="line">    <span class="attribute">font-size</span>: <span class="number">16px</span>;</span><br><span class="line">    <span class="attribute">font-weight</span>: bold;</span><br><span class="line">    <span class="attribute">text-align</span>: center;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>These styles put each photo along with their IDs and titles in rounded rectangles. With our CSS file created, we will modify our <code>Photo</code> component to import our styling, as follows:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> React <span class="keyword">from</span> <span class="string">"react"</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="string">"../assets/css/PhotoComponent.css"</span>;</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<p>Having created our <code>Photo</code> component, we will now create the <code>AlbumComponent</code> file which will have our <code>Album</code> component that will display our array of photos.</p>
+<p>In your terminal, enter the following command to create the file:</p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cd ../../components &amp;&amp; touch AlbumComponent.js</span><br></pre></td></tr></table></figure>
+
+<p>Inside the <code>AlbumComponent.js</code> file, enter the following code:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> React <span class="keyword">from</span> <span class="string">'react'</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="string">'../assets/css/AlbumComponent.css'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> Album = <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> (</span><br><span class="line">        &lt;div className=<span class="string">"album"</span>&gt;</span><br><span class="line">        &lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">    )</span></span><br><span class="line"><span class="regexp">&#125;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">export default Album;</span></span><br></pre></td></tr></table></figure>
+
+<p>In the above piece of code, we create a <em>functional component</em>, which renders a div to the DOM. We will later include the logic to populate our <code>photos</code>. </p>
+<p>Notice also, that we’ve imported a CSS file into our component. To satisfy this, we’ll create an <code>AlbumComponent.css</code> file, enter this in the terminal:</p>
+<p>In your terminal, enter the following command to create the file:</p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cd ../assets/css &amp;&amp; touch AlbumComponent.css</span><br></pre></td></tr></table></figure>
+
+<p>Now edit the file to have the following code:</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.album</span> &#123;</span><br><span class="line">    <span class="attribute">display</span>: flex;</span><br><span class="line">    <span class="attribute">flex-flow</span>: row wrap;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>This CSS rule makes the <code>album</code> component responsive as it places photos in a row, wrapping to a next row if there’s an overflow.</p>
+<p>Let us also create an <code>Input</code> component, which will allow us to load different albums by ID. Inside the <code>components</code> folder, create the <code>InputComponent.js</code> file as follows:</p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cd ../../components &amp;&amp; touch InputComponent.js</span><br></pre></td></tr></table></figure>
+
+<p>Enter the following code in the <code>InputComponent.js</code> file:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> React <span class="keyword">from</span> <span class="string">"react"</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="string">"../assets/css/InputComponent.css"</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> Input = <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> [inputValue, setInputValue] = React.useState(<span class="string">""</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> (</span><br><span class="line">        &lt;div className=<span class="string">"search"</span>&gt;</span><br><span class="line">            &lt;input</span><br><span class="line">                className=<span class="string">"input-component"</span></span><br><span class="line">                type=<span class="string">"text"</span></span><br><span class="line">                value=&#123;inputValue&#125;</span><br><span class="line">                onChange=&#123;e =&gt; setInputValue(e.target.value)&#125;</span><br><span class="line">                placeholder=<span class="string">"Enter the album ID"</span></span><br><span class="line">            /&gt;</span><br><span class="line">            &lt;button className=<span class="string">"submit"</span> onClick=&#123;() =&gt; &#123; &#125;&#125;&gt;</span><br><span class="line">                Load Photos</span><br><span class="line">      &lt;<span class="regexp">/button&gt;</span></span><br><span class="line"><span class="regexp">        &lt;/</span>div&gt;</span><br><span class="line">    );</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> Input;</span><br></pre></td></tr></table></figure>
+
+<p>Our <code>Input</code> component consists of a <code>div</code> with 2 children: an <code>input</code> text box and a <code>button</code>. The <code>input</code> text box is a <em>controlled input</em>, as its value is read from the state via the <code>inputValue</code> prop and updated via the callback invoked inside the <code>onChange</code> event.</p>
+<p>We will create the corresponding CSS file in the <code>assets</code> folder like before. First, let’s create our <code>InputComponent.css</code>:</p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cd ../assets/css &amp;&amp; touch InputComponent.css</span><br></pre></td></tr></table></figure>
+
+<p>And now you can enter the input component styles:</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.search</span> &#123;</span><br><span class="line">    <span class="attribute">display</span>: flex;</span><br><span class="line">    <span class="attribute">flex-flow</span>: row wrap;</span><br><span class="line">    <span class="attribute">width</span>: <span class="number">50%</span>;</span><br><span class="line">    <span class="attribute">margin</span>: <span class="number">20px</span> auto;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.input-component</span> &#123;</span><br><span class="line">    <span class="attribute">width</span>: <span class="number">300px</span>;</span><br><span class="line">    <span class="attribute">height</span>: <span class="number">30px</span>;</span><br><span class="line">    <span class="attribute">text-indent</span>: <span class="number">10px</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.input-component</span><span class="selector-pseudo">::placeholder</span> &#123;</span><br><span class="line">    <span class="attribute">text-indent</span>: <span class="number">10px</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.submit</span> &#123;</span><br><span class="line">    <span class="attribute">width</span>: <span class="number">100px</span>;</span><br><span class="line">    <span class="attribute">margin-left</span>: <span class="number">10px</span>;</span><br><span class="line">    <span class="attribute">height</span>: <span class="number">35px</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.submit</span><span class="selector-pseudo">:hover</span> &#123;</span><br><span class="line">    <span class="attribute">cursor</span>: pointer;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Having set up our components, we will now import them to the <code>App.js</code> file. To do this, replace the code in the <code>App.js</code> file with the following code:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> React <span class="keyword">from</span> <span class="string">'react'</span>;</span><br><span class="line"><span class="keyword">import</span> AlbumComponent <span class="keyword">from</span> <span class="string">'./components/AlbumComponent'</span>;</span><br><span class="line"><span class="keyword">import</span> InputBox <span class="keyword">from</span> <span class="string">'./components/InputComponent'</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="string">'./App.css'</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">App</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> (</span><br><span class="line">    &lt;div className=<span class="string">"App"</span>&gt;</span><br><span class="line">      &lt;InputBox /&gt;</span><br><span class="line">      &lt;AlbumComponent /&gt;</span><br><span class="line">    &lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">  );</span></span><br><span class="line"><span class="regexp">&#125;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">export default App;</span></span><br></pre></td></tr></table></figure>
+
+<p>Notice that <code>App</code> is a functional component that composes the <code>InputBox</code> and <code>AlbumComponent</code> components.</p>
+<p>If you kept your development server running (if not just run <code>npm start</code> in the project directory once more), you’ll see this:</p>
+<p><img src="https://stackabuse.s3.amazonaws.com/media/using-jest-and-enzyme-to-test-react-applications-02.png" alt="Screenshot showing Input and Album components rendered in the main App component. There are no photos loaded"></p>
+<p>We’ve set up our components but there are no photos being displayed as yet. Let’s fix that by adding <a rel="nofollow noopener" target="_blank" href="https://github.com/axios/axios">axios</a>. Axios is a promise-based HTTP client that can be used both on the browser and Node.js. We will use <code>axios</code> to make HTTP requests to our REST API.</p>
+<h4 id="Adding-Axios-for-HTTP-Requests"><a href="#Adding-Axios-for-HTTP-Requests" class="headerlink" title="Adding Axios for HTTP Requests"></a>Adding Axios for HTTP Requests</h4><p>To install <code>axios</code>, run the following command in the terminal inside your project directory:</p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm i --save axios</span><br></pre></td></tr></table></figure>
+
+<p>Or if you have <code>yarn</code> installed:</p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yarn add axios</span><br></pre></td></tr></table></figure>
+
+<p>Once <code>axios</code> is installed, create an <code>axiosConfig.js</code> file inside the <code>src</code> folder:</p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd ../.. # Only if you are still in the assets/css folder</span><br><span class="line">touch axiosConfig.js</span><br></pre></td></tr></table></figure>
+
+<p>And enter the following code:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> axios <span class="keyword">from</span> <span class="string">'axios'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> axiosConfig = axios.create(&#123;</span><br><span class="line">    baseURL: <span class="string">'http://jsonplaceholder.typicode.com/albums'</span></span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> axiosConfig;</span><br></pre></td></tr></table></figure>
+
+<p>Configuring <code>axios</code> creates predetermined defaults across a set of HTTP requests, for example, the base URL of a request in our case.</p>
+<p>Having set up <code>axios</code>, we will now proceed to create our React context to manage the data we will receive from the photos API.</p>
+<h4 id="Setting-up-React-Context"><a href="#Setting-up-React-Context" class="headerlink" title="Setting up React Context"></a>Setting up React Context</h4><p>React version 16 shipped with a new <em>Context API</em> which has changed a lot about how state management is done in React. It has essentially eliminated the need for external state management solutions like Redux.</p>
+<p>The new API enables us to pass props down a component tree without the former pain of prop drilling i.e. systematically manage global data across components. You can read more about it <a rel="nofollow noopener" target="_blank" href="https://reactjs.org/docs/context.html">here</a>.</p>
+<p>To create our context, we will first create a <code>context.js</code> file inside the <code>src</code> folder as follows:</p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">touch context.js</span><br></pre></td></tr></table></figure>
+
+<p>Inside the <code>context.js</code> file enter the following code:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> React <span class="keyword">from</span> <span class="string">"react"</span>;</span><br><span class="line"><span class="keyword">import</span> axios <span class="keyword">from</span> <span class="string">"./axiosConfig"</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> initialState = &#123; <span class="attr">photos</span>: [] &#125;;</span><br><span class="line"><span class="keyword">const</span> store = React.createContext(<span class="literal">null</span>);</span><br><span class="line"><span class="keyword">const</span> &#123; Provider &#125; = store;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> reducer = <span class="function">(<span class="params">state, action</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">switch</span> (action.type) &#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="string">"SET_PHOTOS"</span>:</span><br><span class="line">            <span class="keyword">return</span> &#123;</span><br><span class="line">                ...state,</span><br><span class="line">                photos: action.payload,</span><br><span class="line">            &#125;;</span><br><span class="line">        <span class="keyword">default</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Error</span>();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>In the above piece of code, we first import React and our <code>axios</code> configuration as dependencies. We then create our context using the <code>React.createContext()</code> method and pass <code>null</code> as an argument. This means that our context is initiated with <code>null</code> as the default value. <code>React.createContext()</code> returns a context object which we name <code>store</code>. </p>
+<p>From the <code>store</code> object, we <a href="/javascripts-destructuring-assignment/">destructure</a> the <code>Provider</code> component. The <code>Provider</code> component allows consuming components to subscribe to changes in the context. It achieves this by passing down a <code>value</code> prop to all its descendants. This means, that all components that are descendants of the <code>Provider</code> component will re-render when the Provider’s <code>value</code> prop changes!</p>
+<p>We then create a <em>reducer function</em> that we will use to update our global state. Reducers are an idea borrowed from <a rel="nofollow noopener" target="_blank" href="https://redux.js.org/">Flux/Redux</a>. They are pure functions that take in the current state and an action as arguments. The reducer performs the action and returns a new state.</p>
+<p>An <em>action</em> is a JavaScript containing a <code>type</code> and <code>payload</code>. The action-type is conventionally written in capital letters, with words separated by an underscore. In our case, our action has a type named <code>SET_PHOTOS</code> and a payload which is an array of photos. The reducer function is passed to the <code>useReducer</code> hook as we shall see later.</p>
+<p>Let’s complete the <code>context.js</code> file by adding the following:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> AppProvider = <span class="function">(<span class="params">&#123; children &#125;</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> [state, dispatch] = React.useReducer(reducer, initialState);</span><br><span class="line">    <span class="keyword">const</span> fetchPhotos = <span class="keyword">async</span> (id = <span class="number">2</span>) =&gt; &#123;</span><br><span class="line">        <span class="keyword">const</span> result = <span class="keyword">await</span> axios.request(&#123;</span><br><span class="line">            method: <span class="string">"get"</span>,</span><br><span class="line">            url: <span class="string">`/<span class="subst">$&#123;id&#125;</span>/photos?_limit=20`</span>,</span><br><span class="line">        &#125;);</span><br><span class="line">        <span class="keyword">const</span> &#123; data &#125; = result;</span><br><span class="line">        dispatch(&#123;</span><br><span class="line">            type: <span class="string">"SET_PHOTOS"</span>,</span><br><span class="line">            payload: data,</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> actions = &#123;</span><br><span class="line">        fetchPhotos,</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> (</span><br><span class="line">        &lt;Provider</span><br><span class="line">            value=&#123;&#123;</span><br><span class="line">                state,</span><br><span class="line">                actions,</span><br><span class="line">            &#125;&#125;</span><br><span class="line">        &gt;</span><br><span class="line">            &#123;children&#125;</span><br><span class="line">        &lt;<span class="regexp">/Provider&gt;</span></span><br><span class="line"><span class="regexp">    );</span></span><br><span class="line"><span class="regexp">&#125;;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">export function usePhotoState() &#123;</span></span><br><span class="line"><span class="regexp">    return React.useContext(store).state;</span></span><br><span class="line"><span class="regexp">&#125;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">export function usePhotoActions() &#123;</span></span><br><span class="line"><span class="regexp">    return React.useContext(store).actions;</span></span><br><span class="line"><span class="regexp">&#125;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">export &#123; store, AppProvider &#125;;</span></span><br></pre></td></tr></table></figure>
+
+<p>The <code>AppProvider</code> is a functional component that receives child components as props. Inside the <code>AppProvider</code> component, we call the <code>useReducer()</code> <em>hook</em> and pass the reducer function we earlier created as the first argument. The second argument of the reducer hook is usually the initial value of the state, which in our case, is an object containing an empty array of photos. The <code>useReducer()</code> hook returns the new state and a <code>dispatch()</code> function which can be used to update the state.</p>
+<p>Next, we write our function that makes the actual HTTP request to our REST API. By default, we pass an <code>id</code> of 2 to the request. We destructure the data from the results of the HTTP call and call the <code>dispatch()</code> function to update the store. We then create an <code>actions</code> object with our <code>fetchPhotos()</code> function as a property.</p>
+<p>Our <code>AppProvider</code> function returns a <code>Provider</code> component which nests other components as children and passes the global <code>state</code> to them along with the <code>actions</code> object in the <code>value</code> prop. We then export our <code>AppProvider</code> and store.</p>
+<p>To make working with the global state and actions easier, we export both of them as custom React hooks - <code>usePhotoState()</code> and <code>usePhotoActions()</code> respectively.</p>
+<p>Having set up our context, we will now modify our <code>index.js</code> file to have the <code>AppProvider</code> component nest all other components in the component tree, as follows:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> React <span class="keyword">from</span> <span class="string">'react'</span>;</span><br><span class="line"><span class="keyword">import</span> ReactDOM <span class="keyword">from</span> <span class="string">'react-dom'</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="string">'./index.css'</span>;</span><br><span class="line"><span class="keyword">import</span> App <span class="keyword">from</span> <span class="string">'./App'</span>;</span><br><span class="line"><span class="keyword">import</span> &#123; AppProvider &#125; <span class="keyword">from</span> <span class="string">'./context'</span>;</span><br><span class="line"></span><br><span class="line">ReactDOM.render(</span><br><span class="line">  &lt;React.StrictMode&gt;</span><br><span class="line">    &lt;AppProvider&gt;</span><br><span class="line">      &lt;App /&gt;</span><br><span class="line">    &lt;<span class="regexp">/AppProvider&gt;</span></span><br><span class="line"><span class="regexp">  &lt;/</span>React.StrictMode&gt;</span><br><span class="line">  ,</span><br><span class="line">  <span class="built_in">document</span>.getElementById(<span class="string">'root'</span>)</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<p>Next, we will change our input component to include our global state. Let’s go to <code>InputComponent.js</code>:</p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cd src/components</span><br></pre></td></tr></table></figure>
+
+<p>And in your editor change <code>InputComponent.js</code> to:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> React <span class="keyword">from</span> <span class="string">"react"</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="string">"../assets/css/InputComponent.css"</span>;</span><br><span class="line"><span class="keyword">import</span> &#123; usePhotoActions &#125; <span class="keyword">from</span> <span class="string">"../context"</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> Input = <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> &#123; fetchPhotos &#125; = usePhotoActions();</span><br><span class="line">    <span class="keyword">const</span> [inputValue, setInputValue] = React.useState(<span class="string">""</span>);</span><br><span class="line"></span><br><span class="line">    React.useEffect(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">        fetchPhotos();</span><br><span class="line">    &#125;, []);</span><br><span class="line">    <span class="keyword">return</span> (</span><br><span class="line">        &lt;div className=<span class="string">"search"</span>&gt;</span><br><span class="line">            &lt;input</span><br><span class="line">                className=<span class="string">"input-component"</span></span><br><span class="line">                type=<span class="string">"text"</span></span><br><span class="line">                value=&#123;inputValue&#125;</span><br><span class="line">                onChange=&#123;e =&gt; setInputValue(e.target.value)&#125;</span><br><span class="line">                placeholder=<span class="string">"Enter the album ID"</span></span><br><span class="line">            /&gt;</span><br><span class="line">            &lt;button className=<span class="string">"submit"</span> onClick=&#123;() =&gt; fetchPhotos(<span class="built_in">parseInt</span>(inputValue))&#125;&gt;</span><br><span class="line">                Load Photos</span><br><span class="line">      &lt;<span class="regexp">/button&gt;</span></span><br><span class="line"><span class="regexp">        &lt;/</span>div&gt;</span><br><span class="line">    );</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> Input;</span><br></pre></td></tr></table></figure>
+
+<p>In the above code, we destructure our <code>fetchPhotos()</code> method from the <code>usePhotoActions()</code> custom hook and call it when our component initially mounts. This ensures that when our page loads an HTTP request is made to our API and our store is updated with a list of photos.</p>
+<p>Also, we update the callback of the button’s <code>click</code> event to call <code>fetchPhotos()</code>, passing the album ID as the input value of the search box.</p>
+<p>Next, we’ll update <code>Album</code> component to read <code>photos</code> from the global state and display them. In <code>AlbumComponent.js</code>, replace the current code with the following:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> React <span class="keyword">from</span> <span class="string">'react'</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="string">'../assets/css/AlbumComponent.css'</span>;</span><br><span class="line"><span class="keyword">import</span> Photo <span class="keyword">from</span> <span class="string">'./PhotoComponent'</span>;</span><br><span class="line"><span class="keyword">import</span> &#123; usePhotoState &#125; <span class="keyword">from</span> <span class="string">'../context'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> Album = <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> &#123; photos &#125; = usePhotoState();</span><br><span class="line">    <span class="keyword">return</span> (</span><br><span class="line">        &lt;div className=<span class="string">"album"</span>&gt;</span><br><span class="line">            &#123;photos.map(<span class="function">(<span class="params">photo, ind</span>) =&gt;</span> <span class="xml"><span class="tag">&lt;<span class="name">Photo</span> &#123;<span class="attr">...photo</span>&#125; <span class="attr">key</span>=<span class="string">&#123;ind&#125;</span> /&gt;</span></span>)&#125;</span><br><span class="line">        &lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">    )</span></span><br><span class="line"><span class="regexp">&#125;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">export default Album;</span></span><br></pre></td></tr></table></figure>
+
+<p>Great job so far, you’ve finished your photo album application! If your development server is still not running, you can start the app in the terminal with either:</p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm start</span><br></pre></td></tr></table></figure>
+
+<p>Or</p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yarn start</span><br></pre></td></tr></table></figure>
+
+<p>Go to <a rel="nofollow noopener" target="_blank" href="http://localhost:3000">http://localhost:3000</a> to see this in the browser:</p>
+<p><img src="https://stackabuse.s3.amazonaws.com/media/using-jest-and-enzyme-to-test-react-applications-03.png" alt="Screenshot of photos taken from an HTTP API and displayed by our Album app"></p>
+<p>When you change the album ID to 1 for example, the photos displayed will now be:</p>
+<p><img src="https://stackabuse.s3.amazonaws.com/media/using-jest-and-enzyme-to-test-react-applications-04.png" alt="Screen-Shot-2020-04-28-at-6.56.51-PM"></p>
+<h3 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h3><p>In this introductory article to our app, we have set up our React app, and set up our global context that we will be using to handle our global state.<br>Having set up our application successfully, we will in the next article, set up our tests with Jest and Enzyme.</p>
+<p>See you then!</p>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="https://github.com/allan690" target="_blank" rel="noopener">Projects</a></li>
+         
+          <li><a href="/contact/">Contact</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#Introduction"><span class="toc-number">1.</span> <span class="toc-text">Introduction</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Creating-a-Photo-Album-Viewer-app-in-React"><span class="toc-number">2.</span> <span class="toc-text">Creating a Photo Album Viewer app in React</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Initializing-React"><span class="toc-number">2.1.</span> <span class="toc-text">Initializing React</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Making-Photo-and-Album-Components"><span class="toc-number">2.2.</span> <span class="toc-text">Making Photo and Album Components</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Adding-Axios-for-HTTP-Requests"><span class="toc-number">2.3.</span> <span class="toc-text">Adding Axios for HTTP Requests</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Setting-up-React-Context"><span class="toc-number">2.4.</span> <span class="toc-text">Setting up React Context</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Conclusion"><span class="toc-number">3.</span> <span class="toc-text">Conclusion</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=https://allanmogusu.tk/2020/07/09/react/testing-react-apps-with-jest-enzyme-1/" target="_blank" rel="noopener"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=https://allanmogusu.tk/2020/07/09/react/testing-react-apps-with-jest-enzyme-1/&text=Testing a React Application Using Jest and Enzyme - Part 1" target="_blank" rel="noopener"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=https://allanmogusu.tk/2020/07/09/react/testing-react-apps-with-jest-enzyme-1/&title=Testing a React Application Using Jest and Enzyme - Part 1" target="_blank" rel="noopener"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https://allanmogusu.tk/2020/07/09/react/testing-react-apps-with-jest-enzyme-1/&is_video=false&description=Testing a React Application Using Jest and Enzyme - Part 1" target="_blank" rel="noopener"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Testing a React Application Using Jest and Enzyme - Part 1&body=Check out this article: https://allanmogusu.tk/2020/07/09/react/testing-react-apps-with-jest-enzyme-1/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=https://allanmogusu.tk/2020/07/09/react/testing-react-apps-with-jest-enzyme-1/&title=Testing a React Application Using Jest and Enzyme - Part 1" target="_blank" rel="noopener"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=https://allanmogusu.tk/2020/07/09/react/testing-react-apps-with-jest-enzyme-1/&title=Testing a React Application Using Jest and Enzyme - Part 1" target="_blank" rel="noopener"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=https://allanmogusu.tk/2020/07/09/react/testing-react-apps-with-jest-enzyme-1/&title=Testing a React Application Using Jest and Enzyme - Part 1" target="_blank" rel="noopener"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=https://allanmogusu.tk/2020/07/09/react/testing-react-apps-with-jest-enzyme-1/&title=Testing a React Application Using Jest and Enzyme - Part 1" target="_blank" rel="noopener"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=https://allanmogusu.tk/2020/07/09/react/testing-react-apps-with-jest-enzyme-1/&name=Testing a React Application Using Jest and Enzyme - Part 1&description=" target="_blank" rel="noopener"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://news.ycombinator.com/submitlink?u=https://allanmogusu.tk/2020/07/09/react/testing-react-apps-with-jest-enzyme-1/&t=Testing a React Application Using Jest and Enzyme - Part 1" target="_blank" rel="noopener"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2020
+    Allan Mogusu
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="https://github.com/allan690" target="_blank" rel="noopener">Projects</a></li>
+         
+          <li><a href="/contact/">Contact</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+
+<link rel="stylesheet" href="/lib/justified-gallery/css/justifiedGallery.min.css">
+
+
+    <!-- jquery -->
+
+<script src="/lib/jquery/jquery.min.js"></script>
+
+
+<script src="/lib/justified-gallery/js/jquery.justifiedGallery.min.js"></script>
+
+<!-- clipboard -->
+
+  
+<script src="/lib/clipboard/clipboard.min.js"></script>
+
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="far fa-clone"></i>';
+    btn += '</span>'; 
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Disqus Comments -->
+
+
+</body>
+</html>
