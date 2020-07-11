@@ -14,7 +14,7 @@
 <meta property="og:description" content="IntroductionIn the previous article, we containerized our Flask API using Docker. In this article, we will be deploying the application created earlier to AWS ECR. This article assumes that you have a">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2020-06-11T11:30:56.000Z">
-<meta property="article:modified_time" content="2020-07-11T18:00:36.514Z">
+<meta property="article:modified_time" content="2020-07-11T18:05:52.264Z">
 <meta property="article:author" content="Allan Mogusu">
 <meta property="article:tag" content="flask">
 <meta property="article:tag" content="aws kubernetes">
@@ -166,7 +166,7 @@
     <h2 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h2><p>In the previous article, we containerized our Flask API using Docker. In this article, we will be deploying the application created earlier to AWS ECR.</p>
 <p>This article assumes that you have an AWS account, <a href="https://kops.sigs.k8s.io/install/#installing-aws-cli-tools" target="_blank" rel="noopener">the aws cli installed</a>, and that you have created your registry repository. The registry repo is where our docker images will be hosted. To create the registry repo, you can follow <a href="https://docs.aws.amazon.com/AmazonECR/latest/userguide/repository-create.html" target="_blank" rel="noopener">these steps here</a>.</p>
 <p>With your repository created and ready, we can get started.</p>
-<h2 id="Pushing-Images-to-AWS-ECR"><a href="#Pushing-Images-to-AWS-ECR" class="headerlink" title="Pushing Images to AWS ECR"></a>Pushing Images to AWS ECR</h2><p>The first thing we will do is push our docker image to ECR. To do so, we need to authenticate our docker daemon and give it permissions to push to AWS ECR. To do so we can run the following command:</p>
+<h2 id="Pushing-Images-to-AWS-ECR"><a href="#Pushing-Images-to-AWS-ECR" class="headerlink" title="Pushing Images to AWS ECR"></a>Pushing Images to AWS ECR</h2><p>The first thing we will do is push our docker image to ECR. To do so, we need to authenticate our docker daemon and give it permissions to push to AWS ECR.</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ****.dkr.ecr.us-east-1.amazonaws.com/moringa</span><br></pre></td></tr></table></figure>
 
 <p>Running this command authenticates our docker daemon and gives it privileges to push to ECR. We can now proceed to build and push our image as follows:</p>
@@ -184,7 +184,7 @@
 <p>Finally, we’ll export the variables so that we can use them with kops, as follows:</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> AWS_ACCESS_KEY_ID=$(aws configure get aws_access_key_id)</span><br><span class="line"><span class="built_in">export</span> AWS_SECRET_ACCESS_KEY=$(aws configure get aws_secret_access_key)</span><br></pre></td></tr></table></figure>
 
-<h2 id="Creating-the-cluster-state-storage"><a href="#Creating-the-cluster-state-storage" class="headerlink" title="Creating the cluster state storage"></a>Creating the cluster state storage</h2><p>To store the state and representation of the cluster, we need to create a dedicated s3 bucket for the use of kops,<br>with the region set to <code>us-east-1</code>. Confining the bucket to <code>us-east-1</code> minimizes the amount of configuration required.</p>
+<h2 id="Creating-the-cluster-state-storage"><a href="#Creating-the-cluster-state-storage" class="headerlink" title="Creating the cluster state storage"></a>Creating the cluster state storage</h2><p>To store the state and representation of the cluster, we need to create a dedicated s3 bucket for the use of kops, with the region set to <code>us-east-1</code>. Confining the bucket to <code>us-east-1</code> minimizes the amount of configuration required.</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">aws s3api create-bucket \</span><br><span class="line">    --bucket flask-testing-app-state-store \</span><br><span class="line">    --region us-east-1</span><br></pre></td></tr></table></figure>
 <p>Having created our s3 bucket, we can now proceed to create the cluster.</p>
 <h2 id="Creating-the-cluster"><a href="#Creating-the-cluster" class="headerlink" title="Creating the cluster"></a>Creating the cluster</h2><p>Before creating the cluster, we need to export 2 environment variables that we will use with kops during the cluster creation process,<br>passing in the url of the s3 bucket created in the previous step to the state store as follows:</p>
