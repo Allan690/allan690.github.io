@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="IntroductionIn the previous article, we created our cluster in AWS using the kops utility. In this article, we will proceed to create the resources required to run our app in the cluster. Let’s begin.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Deploying a Flask App to Kubernetes on AWS - Part 3">
+<meta property="og:url" content="https://allanmogusu.tk/2020/06/12/devops/deploying-flask-app-to-k8s-aws-part-3/index.html">
+<meta property="og:site_name" content="Allan Mogusu">
+<meta property="og:description" content="IntroductionIn the previous article, we created our cluster in AWS using the kops utility. In this article, we will proceed to create the resources required to run our app in the cluster. Let’s begin.">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-06-12T11:21:56.000Z">
+<meta property="article:modified_time" content="2020-07-11T17:26:59.471Z">
+<meta property="article:author" content="Allan Mogusu">
+<meta property="article:tag" content="flask">
+<meta property="article:tag" content="aws kubernetes">
+<meta property="article:tag" content="python">
+<meta property="article:tag" content="kubernetes">
+<meta property="article:tag" content="flask k8s">
+<meta name="twitter:card" content="summary">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/images/favicon.ico">
+          
+        
+        
+          
+            <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+          
+        
+        
+          
+            <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+          
+        
+    
+    <!-- title -->
+    <title>Deploying a Flask App to Kubernetes on AWS - Part 3</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+      
+<link rel="stylesheet" href="/css/rtl.css">
+
+    
+    <!-- rss -->
+    
+    
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="https://github.com/allan690" target="_blank" rel="noopener">Projects</a></li>
+         
+          <li><a href="/contact/">Contact</a></li>
+        
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" href="/2020/07/09/react/testing-react-apps-with-jest-enzyme-1/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" href="/2020/06/11/devops/deploying-flask-app-to-k8s-aws-part-2/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=https://allanmogusu.tk/2020/06/12/devops/deploying-flask-app-to-k8s-aws-part-3/" target="_blank" rel="noopener"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=https://allanmogusu.tk/2020/06/12/devops/deploying-flask-app-to-k8s-aws-part-3/&text=Deploying a Flask App to Kubernetes on AWS - Part 3" target="_blank" rel="noopener"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=https://allanmogusu.tk/2020/06/12/devops/deploying-flask-app-to-k8s-aws-part-3/&title=Deploying a Flask App to Kubernetes on AWS - Part 3" target="_blank" rel="noopener"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https://allanmogusu.tk/2020/06/12/devops/deploying-flask-app-to-k8s-aws-part-3/&is_video=false&description=Deploying a Flask App to Kubernetes on AWS - Part 3" target="_blank" rel="noopener"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Deploying a Flask App to Kubernetes on AWS - Part 3&body=Check out this article: https://allanmogusu.tk/2020/06/12/devops/deploying-flask-app-to-k8s-aws-part-3/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=https://allanmogusu.tk/2020/06/12/devops/deploying-flask-app-to-k8s-aws-part-3/&title=Deploying a Flask App to Kubernetes on AWS - Part 3" target="_blank" rel="noopener"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=https://allanmogusu.tk/2020/06/12/devops/deploying-flask-app-to-k8s-aws-part-3/&title=Deploying a Flask App to Kubernetes on AWS - Part 3" target="_blank" rel="noopener"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=https://allanmogusu.tk/2020/06/12/devops/deploying-flask-app-to-k8s-aws-part-3/&title=Deploying a Flask App to Kubernetes on AWS - Part 3" target="_blank" rel="noopener"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=https://allanmogusu.tk/2020/06/12/devops/deploying-flask-app-to-k8s-aws-part-3/&title=Deploying a Flask App to Kubernetes on AWS - Part 3" target="_blank" rel="noopener"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=https://allanmogusu.tk/2020/06/12/devops/deploying-flask-app-to-k8s-aws-part-3/&name=Deploying a Flask App to Kubernetes on AWS - Part 3&description=" target="_blank" rel="noopener"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://news.ycombinator.com/submitlink?u=https://allanmogusu.tk/2020/06/12/devops/deploying-flask-app-to-k8s-aws-part-3/&t=Deploying a Flask App to Kubernetes on AWS - Part 3" target="_blank" rel="noopener"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Introduction"><span class="toc-number">1.</span> <span class="toc-text">Introduction</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Creating-Manifests-to-deploy-Postgres-server"><span class="toc-number">2.</span> <span class="toc-text">Creating Manifests to deploy Postgres server</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Creating-the-persistent-volume-manifests"><span class="toc-number">2.1.</span> <span class="toc-text">Creating the persistent volume manifests</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Creating-the-Postgres-deployment-and-Service-manifests"><span class="toc-number">2.2.</span> <span class="toc-text">Creating the Postgres deployment and Service manifests</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Deploying-the-Flask-Application"><span class="toc-number">3.</span> <span class="toc-text">Deploying the Flask Application</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Creating-the-service-and-deployment-manifests"><span class="toc-number">3.1.</span> <span class="toc-text">Creating the service and deployment manifests</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Conclusion"><span class="toc-number">4.</span> <span class="toc-text">Conclusion</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        Deploying a Flask App to Kubernetes on AWS - Part 3
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">Allan Mogusu</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2020-06-12T11:21:56.000Z" itemprop="datePublished">2020-06-12</time>
+        
+      
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fas fa-archive"></i>
+        <a class="category-link" href="/categories/devops/">devops</a> › <a class="category-link" href="/categories/devops/flask/">flask</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link" href="/tags/devops/" rel="tag">devops</a>, <a class="tag-link" href="/tags/flask/" rel="tag">flask</a>, <a class="tag-link" href="/tags/python/" rel="tag">python</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <h2 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h2><p>In the previous article, we created our cluster in AWS using the kops utility. In this article, we will proceed to create the resources required to run our app in the cluster.</p>
+<p>Let’s begin.</p>
+<h2 id="Creating-Manifests-to-deploy-Postgres-server"><a href="#Creating-Manifests-to-deploy-Postgres-server" class="headerlink" title="Creating Manifests to deploy Postgres server"></a>Creating Manifests to deploy Postgres server</h2><p>To deploy the Postgres server, we need to create the following manifests in the root of the project directory:</p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">1. postgres-persistent-volume.yaml</span><br><span class="line">2. postgres-persistent-volume-claim.yaml</span><br><span class="line">3. postgres-deployment.yaml </span><br><span class="line">4. postgres-service.yaml</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="Creating-the-persistent-volume-manifests"><a href="#Creating-the-persistent-volume-manifests" class="headerlink" title="Creating the persistent volume manifests"></a>Creating the persistent volume manifests</h3><p>We will begin by creating the <code>postgres-persistent-volume.yaml</code> manifest. Create a <code>deployments</code> directory and create the file as follows:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mkdir deployments &amp;&amp; touch postgres-persistent-volume.yaml postgres-persistent-volume-claim.yaml</span><br></pre></td></tr></table></figure>
+
+<p>Open the <code>postgres-persistent-volume.yaml</code> file and enter the following into it:</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">storage.k8s.io/v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">StorageClass</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">cloud-postgres-ssd</span></span><br><span class="line"><span class="attr">provisioner:</span> <span class="string">kubernetes.io/aws-ebs</span></span><br><span class="line"><span class="attr">parameters:</span></span><br><span class="line">  <span class="attr">type:</span> <span class="string">gp2</span></span><br></pre></td></tr></table></figure>
+
+<p>This manifest creates persistent storage called <code>cloud-postgres-ssd</code>. Since we’re working with AWS as our cloud provider, the storage will be provisioned on AWS EBS. We use the general purpose disks(SSD) as they provide a good balance between price and performance. </p>
+<p>Next we will now create our persistent volume claims. A Persistent volume claim defines the features or specs of a persistent volume. We can create it as follows:</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">PersistentVolumeClaim</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">moringa-database-persistent-volume-claim</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">accessModes:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">ReadWriteOnce</span></span><br><span class="line">  <span class="attr">storageClassName:</span> <span class="string">cloud-postgres-ssd</span></span><br><span class="line">  <span class="attr">resources:</span></span><br><span class="line">    <span class="attr">requests:</span></span><br><span class="line">      <span class="attr">storage:</span> <span class="string">1Gi</span></span><br></pre></td></tr></table></figure>
+
+<p>In our volume claim manifest here, we create a request for persistent volume with 1GB of storage, with <code>ReadWriteOnce</code> access mode. This access mode essentially means that our volume is mounted as read-write by a single node. This is useful for our demo application.<br>You can <a href="https://kubernetes.io/docs/concepts/storage/persistent-volumes/#access-modes" target="_blank" rel="noopener">read more on access modes here</a></p>
+<p>It is important to understand that the persistent volume and volume claim resources store our data in persistent storage since docker containers are by nature ephemeral i.e data within them is lost after termination of container instances.</p>
+<p>To create our persistent volume and volume claims, we will apply the manifests as follows:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ kubectl apply -f postgres-persistent-volume.yaml</span><br><span class="line">storageclass.storage.k8s.io/cloud-postgres-ssd created</span><br></pre></td></tr></table></figure>
+
+<p>And the persistent volume claim:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ kubectl apply -f postgres-persistent-volume-claim.yaml</span><br><span class="line">persistentvolumeclaim/moringa-database-persistent-volume-claim created</span><br></pre></td></tr></table></figure>
+
+<p>To check that the persistent volumes and claims have been created, we can run the following command:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ kubectl get pvc</span><br><span class="line">NAME                                       STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS         AGE</span><br><span class="line">moringa-database-persistent-volume-claim   Bound    pvc-443d1a53-94ce-45ea-8f8f-0544c7a99669   1Gi        RWO            cloud-postgres-ssd   9s</span><br></pre></td></tr></table></figure>
+
+<p>The output should show that the volume and claims have been created successfully. </p>
+<h3 id="Creating-the-Postgres-deployment-and-Service-manifests"><a href="#Creating-the-Postgres-deployment-and-Service-manifests" class="headerlink" title="Creating the Postgres deployment and Service manifests"></a>Creating the Postgres deployment and Service manifests</h3><p>According to the Kubernetes documentation:</p>
+<blockquote>
+<p>A Deployment provides declarative updates for Pods and ReplicaSets.<br>You describe a desired state in a Deployment, and the Deployment Controller changes the actual state to the desired state at a controlled rate. You can define Deployments to create new ReplicaSets, or to remove existing Deployments and adopt all their resources with new Deployments.</p>
+</blockquote>
+<p>In this step, we will create the postgres deployment and service manifests as follows:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">touch postgres-deployment.yaml postgres-service.yaml</span><br></pre></td></tr></table></figure>
+<p>Inside the deployment manifest enter the following code:</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># postgres-deployment.yaml</span></span><br><span class="line"><span class="attr">apiVersion:</span> <span class="string">apps/v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Deployment</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">postgres-deployment</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">replicas:</span> <span class="number">1</span></span><br><span class="line">  <span class="attr">selector:</span></span><br><span class="line">    <span class="attr">matchLabels:</span></span><br><span class="line">      <span class="attr">component:</span> <span class="string">postgres</span></span><br><span class="line">  <span class="attr">template:</span></span><br><span class="line">    <span class="attr">metadata:</span></span><br><span class="line">      <span class="attr">labels:</span></span><br><span class="line">        <span class="attr">component:</span> <span class="string">postgres</span></span><br><span class="line">    <span class="attr">spec:</span></span><br><span class="line">      <span class="attr">volumes:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">moringa-postgres-storage</span></span><br><span class="line">          <span class="attr">persistentVolumeClaim:</span></span><br><span class="line">            <span class="attr">claimName:</span> <span class="string">moringa-database-persistent-volume-claim</span></span><br><span class="line">      <span class="attr">containers:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">database</span></span><br><span class="line">          <span class="attr">image:</span> <span class="string">postgres</span></span><br><span class="line">          <span class="attr">ports:</span></span><br><span class="line">            <span class="bullet">-</span> <span class="attr">containerPort:</span> <span class="number">5432</span></span><br><span class="line">          <span class="attr">volumeMounts:</span></span><br><span class="line">            <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">moringa-postgres-storage</span></span><br><span class="line">              <span class="attr">mountPath:</span> <span class="string">/var/lib/postgresql/data</span></span><br><span class="line">              <span class="attr">subPath:</span> <span class="string">postgres</span></span><br><span class="line">          <span class="attr">env:</span></span><br><span class="line">            <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">POSTGRES_PASSWORD</span></span><br><span class="line">              <span class="attr">valueFrom:</span></span><br><span class="line">                <span class="attr">secretKeyRef:</span></span><br><span class="line">                  <span class="attr">name:</span> <span class="string">env-vars</span></span><br><span class="line">                  <span class="attr">key:</span> <span class="string">DB_PASSWORD</span></span><br><span class="line">            <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">POSTGRES_USER</span></span><br><span class="line">              <span class="attr">valueFrom:</span></span><br><span class="line">                <span class="attr">secretKeyRef:</span></span><br><span class="line">                  <span class="attr">name:</span> <span class="string">env-vars</span></span><br><span class="line">                  <span class="attr">key:</span> <span class="string">DB_USER</span></span><br><span class="line">            <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">POSTGRES_DB</span></span><br><span class="line">              <span class="attr">valueFrom:</span></span><br><span class="line">                <span class="attr">secretKeyRef:</span></span><br><span class="line">                  <span class="attr">name:</span> <span class="string">env-vars</span></span><br><span class="line">                  <span class="attr">key:</span> <span class="string">DB_NAME</span></span><br></pre></td></tr></table></figure>
+
+<p>In our deployment manifest, we specify the persistent volume claim created earlier, the number of replicas(instances of running containers) we want, and finally the specifications of the container image with its environment variables passed to it.</p>
+<p>We can pass the environment variables(secrets) securely to our deployment by creating them as follows:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$ kubectl create secret generic env-vars \</span><br><span class="line">--from-literal=DB_NAME=<span class="string">"moringa"</span> \</span><br><span class="line">--from-literal=DB_USER=<span class="string">"postgres"</span> \</span><br><span class="line">--from-literal=DB_PASSWORD=<span class="string">"password"</span></span><br><span class="line"></span><br><span class="line">secret/env-vars created</span><br></pre></td></tr></table></figure>
+
+<p>Having created our secrets, we can then create the postgres deployment as follows:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ kubectl apply -f postgres-deployment.yaml</span><br><span class="line">deployment.apps/postgres-deployment created</span><br></pre></td></tr></table></figure>
+
+<p>While our deployment has been created, we need a way of exposing it to traffic within the cluster. To do so, we will need to create the service manifest.</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># postgres-service.yaml</span></span><br><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Service</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">postgres-cluster-ip-service</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">type:</span> <span class="string">ClusterIP</span></span><br><span class="line">  <span class="attr">selector:</span></span><br><span class="line">    <span class="attr">component:</span> <span class="string">postgres</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">port:</span> <span class="number">5432</span></span><br><span class="line">      <span class="attr">targetPort:</span> <span class="number">5432</span></span><br></pre></td></tr></table></figure>
+
+<p>In our manifest, we specify that our service will be of type ClusterIP meaning our deployment will only be accessible within the cluster. All traffic will come through port 5432 and will be redirected to the same port. We also specify the name of our deployment in the <code>component</code> section.</p>
+<p>Finally, we can create our service as follows:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ kubectl apply -f postgres-service.yaml</span><br><span class="line">service/app-cluster-ip-service created</span><br></pre></td></tr></table></figure>
+
+<p>To check that the deployment is running as expected, we can run the following command:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ kubectl get po -w</span><br><span class="line">NAME                                  READY   STATUS    RESTARTS   AGE</span><br><span class="line">postgres-deployment-878bb458f-lxdzt   1/1     Running   0          10m</span><br></pre></td></tr></table></figure>
+
+<h2 id="Deploying-the-Flask-Application"><a href="#Deploying-the-Flask-Application" class="headerlink" title="Deploying the Flask Application"></a>Deploying the Flask Application</h2><h3 id="Creating-the-service-and-deployment-manifests"><a href="#Creating-the-service-and-deployment-manifests" class="headerlink" title="Creating the service and deployment manifests"></a>Creating the service and deployment manifests</h3><p>To deploy the application, we need to create 3 manifests:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">1. flask-ingress.yaml</span><br><span class="line">2. flask-service.yaml</span><br><span class="line">3. flask_deployment.yaml</span><br></pre></td></tr></table></figure>
+
+<p>To create them, you can run the following command on your terminal:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">touch flask-ingress.yaml flask-service.yaml flask_deployment.yaml</span><br></pre></td></tr></table></figure>
+
+<p>The deployment manifest pulls our docker image from AWS ECR and passes to it the environment variables it requires to run.<br>The service manifest redirects traffic to our target port which is in our case 5000, while the ingress performs load balancing.</p>
+<p>We can create the secrets required by our deployment as follows:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ kubectl create secret generic secret-key \</span><br><span class="line">--from-literal=SECRET_KEY=random  \</span><br><span class="line">--from-literal=DATABASE_URL=postgres://postgres:password@postgres-cluster-ip-service:5432/moringa</span><br><span class="line"></span><br><span class="line">secret/secret-key created</span><br></pre></td></tr></table></figure>
+
+<p>Having created our secrets, open the deployment manifest and enter the following code, replacing the <code>AWS_ACCESS_KEY_ID</code> and <code>ECR_ZONE</code> keys with the relevant credentials:</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># flask-deployment.yaml</span></span><br><span class="line"><span class="attr">apiVersion:</span> <span class="string">apps/v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Deployment</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">devops-assessment</span></span><br><span class="line">  <span class="attr">labels:</span></span><br><span class="line">    <span class="attr">name:</span> <span class="string">devops-assessment</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">replicas:</span> <span class="number">2</span></span><br><span class="line">  <span class="attr">selector:</span></span><br><span class="line">    <span class="attr">matchLabels:</span></span><br><span class="line">      <span class="attr">app:</span> <span class="string">flask-app</span></span><br><span class="line">  <span class="attr">template:</span></span><br><span class="line">    <span class="attr">metadata:</span></span><br><span class="line">      <span class="attr">labels:</span></span><br><span class="line">        <span class="attr">app:</span> <span class="string">flask-app</span></span><br><span class="line">    <span class="attr">spec:</span></span><br><span class="line">      <span class="attr">containers:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">flask-app</span></span><br><span class="line">        <span class="attr">image:</span> <span class="string">$&#123;AWS_ACCESS_KEY_ID&#125;.dkr.ecr.$&#123;ECR_ZONE&#125;.amazonaws.com/moringa:0.0.2</span></span><br><span class="line">        <span class="attr">imagePullPolicy:</span> <span class="string">Always</span></span><br><span class="line">        <span class="attr">env:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">SECRET_KEY</span></span><br><span class="line">          <span class="attr">valueFrom:</span></span><br><span class="line">            <span class="attr">secretKeyRef:</span></span><br><span class="line">              <span class="attr">name:</span> <span class="string">secret-key</span></span><br><span class="line">              <span class="attr">key:</span> <span class="string">SECRET_KEY</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">DATABASE_URL</span></span><br><span class="line">          <span class="attr">valueFrom:</span></span><br><span class="line">            <span class="attr">secretKeyRef:</span></span><br><span class="line">              <span class="attr">name:</span> <span class="string">secret-key</span></span><br><span class="line">              <span class="attr">key:</span> <span class="string">DATABASE_URL</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">HOST</span></span><br><span class="line">          <span class="attr">value:</span> <span class="string">"0.0.0.0"</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">PORT</span></span><br><span class="line">          <span class="attr">value:</span> <span class="string">"5000"</span></span><br><span class="line">      <span class="attr">restartPolicy:</span> <span class="string">Always</span></span><br></pre></td></tr></table></figure>
+
+<p>In this deployment manifest, we specify that we want 2 running instances of our flask application. In the spec section, we specify the details of our docker image that we pushed to ECR. K8s takes care of pulling the image and running it. By default, the image pull policy pulls images if they’re not present.</p>
+<p>Having created our deployment manifest, we can apply it to create the deployment as follows:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">$ kubectl apply -f flask_deployment.yaml</span><br><span class="line">deployment.apps/devops-assessment created</span><br><span class="line">``` </span><br><span class="line"></span><br><span class="line">Having created our deployment, <span class="built_in">let</span> us now create our service to expose our deployment to traffic within the cluster.</span><br><span class="line"> </span><br><span class="line">Open the `flask-service.yaml` file and enter the following code:</span><br><span class="line"></span><br><span class="line">```yaml</span><br><span class="line"><span class="comment"># flask-service.yaml</span></span><br><span class="line">apiVersion: v1</span><br><span class="line">kind: Service</span><br><span class="line">metadata:</span><br><span class="line">  name: app-cluster-ip-service</span><br><span class="line">spec:</span><br><span class="line">  <span class="built_in">type</span>: ClusterIP</span><br><span class="line">  selector:</span><br><span class="line">    app: flask-app</span><br><span class="line">  ports:</span><br><span class="line">    - port: 8000</span><br><span class="line">      targetPort: 5000</span><br></pre></td></tr></table></figure>
+
+<p>Here, we specify our service to be of type <code>ClusterIP</code> and link our deployment created earlier in the selector section of the manifest. Finally, we specify in the ports section that our service will receive traffic on port 8000 and redirect it to port 5000. Note that port 5000 should be exposed by the deployment.</p>
+<p>To apply the service, we create it as follows:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ kubectl apply -f flask-service.yaml   </span><br><span class="line">service/app-cluster-ip-service created</span><br></pre></td></tr></table></figure>
+
+<p>To expose our services to external traffic, typically HTTP, we need an ingress resource and controller. Traffic routing will be controlled by rules defined on the ingress resource. </p>
+<blockquote>
+<p>“In AWS, we use a Network Load Balancer(NLB) to expose the NGINX ingress controller behind a service of Type=LoadBalancer” – <a href="https://kubernetes.github.io/ingress-nginx/deploy/#network-load-balancer-nlb" target="_blank" rel="noopener">k8s-aws-docs</a>   </p>
+</blockquote>
+<p>Luckily for us, there is already a prepared manifest to create our ingress controller in AWS that we can leverage. You can run the following command to apply it:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">$ kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-0.32.0/deploy/static/provider/aws/deploy.yaml</span><br><span class="line">namespace/ingress-nginx created</span><br><span class="line">serviceaccount/ingress-nginx created</span><br><span class="line">configmap/ingress-nginx-controller created</span><br><span class="line">clusterrole.rbac.authorization.k8s.io/ingress-nginx created</span><br><span class="line">clusterrolebinding.rbac.authorization.k8s.io/ingress-nginx created</span><br><span class="line">role.rbac.authorization.k8s.io/ingress-nginx created</span><br><span class="line">rolebinding.rbac.authorization.k8s.io/ingress-nginx created</span><br><span class="line">service/ingress-nginx-controller-admission created</span><br><span class="line">service/ingress-nginx-controller created</span><br><span class="line">deployment.apps/ingress-nginx-controller created</span><br><span class="line">validatingwebhookconfiguration.admissionregistration.k8s.io/ingress-nginx-admission created</span><br><span class="line">clusterrole.rbac.authorization.k8s.io/ingress-nginx-admission created</span><br><span class="line">clusterrolebinding.rbac.authorization.k8s.io/ingress-nginx-admission created</span><br><span class="line">job.batch/ingress-nginx-admission-create created</span><br><span class="line">job.batch/ingress-nginx-admission-patch created</span><br><span class="line">role.rbac.authorization.k8s.io/ingress-nginx-admission created</span><br><span class="line">rolebinding.rbac.authorization.k8s.io/ingress-nginx-admission created</span><br><span class="line">serviceaccount/ingress-nginx-admission created</span><br></pre></td></tr></table></figure>
+
+<p>Next, we’ll write the manifest to create our ingress resource. </p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># flask-ingress.yaml</span></span><br><span class="line"><span class="attr">apiVersion:</span> <span class="string">networking.k8s.io/v1beta1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Ingress</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">ingress-service</span></span><br><span class="line">  <span class="attr">annotations:</span></span><br><span class="line">    <span class="attr">kubernetes.io/ingress.class:</span> <span class="string">nginx</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">rules:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">http:</span></span><br><span class="line">      <span class="attr">paths:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">path:</span> <span class="string">/</span></span><br><span class="line">        <span class="attr">backend:</span></span><br><span class="line">          <span class="attr">serviceName:</span> <span class="string">app-cluster-ip-service</span></span><br><span class="line">          <span class="attr">servicePort:</span> <span class="number">8000</span></span><br></pre></td></tr></table></figure>
+
+<p>Notice that we expose port 8000 to external traffic on the default path which is <code>/</code>. This port matches with the entry port on the <code>flask-service.yaml</code> file.</p>
+<p>Having created our manifest, we can apply the ingress resource manifest as follows:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ kubectl apply -f flask-ingress.yaml</span><br><span class="line">ingress.networking.k8s.io/ingress-service created</span><br></pre></td></tr></table></figure>
+
+<p>Finally, we can test that our ingress is up and working by running the command:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ kubectl get ing</span><br></pre></td></tr></table></figure>
+
+<p>This should list us the details of our application, among which should be the external IP address of the application.</p>
+<h2 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h2><p>In this article, we have created the resources required to run our Flask application in a Kubernetes cluster in AWS. Earlier on, we also looked at how we can create, run, and publish our docker images to ECR.</p>
+<p>My sincere hope is this gives you a good foundation that you can build upon for building and deploying your flask apps. The <a href="https://kubernetes.io/docs/home/" target="_blank" rel="noopener">Kubernetes official documentation</a> remain the best reference in learning about how to work with Kubernetes.</p>
+<p>All the best and happy coding! 😃</p>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="https://github.com/allan690" target="_blank" rel="noopener">Projects</a></li>
+         
+          <li><a href="/contact/">Contact</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Introduction"><span class="toc-number">1.</span> <span class="toc-text">Introduction</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Creating-Manifests-to-deploy-Postgres-server"><span class="toc-number">2.</span> <span class="toc-text">Creating Manifests to deploy Postgres server</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Creating-the-persistent-volume-manifests"><span class="toc-number">2.1.</span> <span class="toc-text">Creating the persistent volume manifests</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Creating-the-Postgres-deployment-and-Service-manifests"><span class="toc-number">2.2.</span> <span class="toc-text">Creating the Postgres deployment and Service manifests</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Deploying-the-Flask-Application"><span class="toc-number">3.</span> <span class="toc-text">Deploying the Flask Application</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Creating-the-service-and-deployment-manifests"><span class="toc-number">3.1.</span> <span class="toc-text">Creating the service and deployment manifests</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Conclusion"><span class="toc-number">4.</span> <span class="toc-text">Conclusion</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=https://allanmogusu.tk/2020/06/12/devops/deploying-flask-app-to-k8s-aws-part-3/" target="_blank" rel="noopener"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=https://allanmogusu.tk/2020/06/12/devops/deploying-flask-app-to-k8s-aws-part-3/&text=Deploying a Flask App to Kubernetes on AWS - Part 3" target="_blank" rel="noopener"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=https://allanmogusu.tk/2020/06/12/devops/deploying-flask-app-to-k8s-aws-part-3/&title=Deploying a Flask App to Kubernetes on AWS - Part 3" target="_blank" rel="noopener"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https://allanmogusu.tk/2020/06/12/devops/deploying-flask-app-to-k8s-aws-part-3/&is_video=false&description=Deploying a Flask App to Kubernetes on AWS - Part 3" target="_blank" rel="noopener"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Deploying a Flask App to Kubernetes on AWS - Part 3&body=Check out this article: https://allanmogusu.tk/2020/06/12/devops/deploying-flask-app-to-k8s-aws-part-3/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=https://allanmogusu.tk/2020/06/12/devops/deploying-flask-app-to-k8s-aws-part-3/&title=Deploying a Flask App to Kubernetes on AWS - Part 3" target="_blank" rel="noopener"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=https://allanmogusu.tk/2020/06/12/devops/deploying-flask-app-to-k8s-aws-part-3/&title=Deploying a Flask App to Kubernetes on AWS - Part 3" target="_blank" rel="noopener"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=https://allanmogusu.tk/2020/06/12/devops/deploying-flask-app-to-k8s-aws-part-3/&title=Deploying a Flask App to Kubernetes on AWS - Part 3" target="_blank" rel="noopener"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=https://allanmogusu.tk/2020/06/12/devops/deploying-flask-app-to-k8s-aws-part-3/&title=Deploying a Flask App to Kubernetes on AWS - Part 3" target="_blank" rel="noopener"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=https://allanmogusu.tk/2020/06/12/devops/deploying-flask-app-to-k8s-aws-part-3/&name=Deploying a Flask App to Kubernetes on AWS - Part 3&description=" target="_blank" rel="noopener"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://news.ycombinator.com/submitlink?u=https://allanmogusu.tk/2020/06/12/devops/deploying-flask-app-to-k8s-aws-part-3/&t=Deploying a Flask App to Kubernetes on AWS - Part 3" target="_blank" rel="noopener"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2020
+    Allan Mogusu
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="https://github.com/allan690" target="_blank" rel="noopener">Projects</a></li>
+         
+          <li><a href="/contact/">Contact</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+
+<link rel="stylesheet" href="/lib/justified-gallery/css/justifiedGallery.min.css">
+
+
+    <!-- jquery -->
+
+<script src="/lib/jquery/jquery.min.js"></script>
+
+
+<script src="/lib/justified-gallery/js/jquery.justifiedGallery.min.js"></script>
+
+<!-- clipboard -->
+
+  
+<script src="/lib/clipboard/clipboard.min.js"></script>
+
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="far fa-clone"></i>';
+    btn += '</span>'; 
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Disqus Comments -->
+
+
+</body>
+</html>
