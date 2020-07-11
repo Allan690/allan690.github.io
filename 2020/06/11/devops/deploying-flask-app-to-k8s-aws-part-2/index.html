@@ -14,7 +14,7 @@
 <meta property="og:description" content="IntroductionIn the previous article, we containerized our Flask API using Docker. In this article, we will be deploying the application created earlier to AWS ECR. This article assumes that you have a">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2020-06-11T11:30:56.000Z">
-<meta property="article:modified_time" content="2020-07-11T17:22:59.993Z">
+<meta property="article:modified_time" content="2020-07-11T17:44:49.550Z">
 <meta property="article:author" content="Allan Mogusu">
 <meta property="article:tag" content="flask">
 <meta property="article:tag" content="aws kubernetes">
@@ -166,7 +166,7 @@
     <h2 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h2><p>In the previous article, we containerized our Flask API using Docker. In this article, we will be deploying the application created earlier to AWS ECR.</p>
 <p>This article assumes that you have an AWS account, <a href="https://kops.sigs.k8s.io/install/#installing-aws-cli-tools" target="_blank" rel="noopener">the aws cli installed</a>, and that you have created your registry repository. The registry repo is where our docker images will be hosted. To create the registry repo, you can follow <a href="https://docs.aws.amazon.com/AmazonECR/latest/userguide/repository-create.html" target="_blank" rel="noopener">these steps here</a>.</p>
 <p>With your repository created and ready, we can get started.</p>
-<h2 id="Pushing-Images-to-AWS-ECR"><a href="#Pushing-Images-to-AWS-ECR" class="headerlink" title="Pushing Images to AWS ECR"></a>Pushing Images to AWS ECR</h2><p>To authenticate our local docker daemon to push to AWS ECR, we need to first give it the permissions to push to the registry.For our Flask app we can do that as follows:</p>
+<h2 id="Pushing-Images-to-AWS-ECR"><a href="#Pushing-Images-to-AWS-ECR" class="headerlink" title="Pushing Images to AWS ECR"></a>Pushing Images to AWS ECR</h2><p>The first things we will do is push our docker image to ECR. To do so, we need to authenticate our docker daemon to push to AWS ECR. This will give it the required permissions to push to AWS ECR:</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ****.dkr.ecr.us-east-1.amazonaws.com/moringa</span><br></pre></td></tr></table></figure>
 
 <p>Running this command should authenticate our docker daemon. We can now proceed to build and push our image to ECR as follows:</p>
