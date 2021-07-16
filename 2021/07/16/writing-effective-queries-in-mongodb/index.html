@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="MongoDB is currently the most popular No-SQL database, the flexibility of its schemas enabling it’s suitability for use with big data. However, compared to SQL, Mongo’s query language is comparatively">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Writing Effective Queries in Mongodb">
+<meta property="og:url" content="https://allanmogusu.tk/2021/07/16/writing-effective-queries-in-mongodb/index.html">
+<meta property="og:site_name" content="Allan Mogusu">
+<meta property="og:description" content="MongoDB is currently the most popular No-SQL database, the flexibility of its schemas enabling it’s suitability for use with big data. However, compared to SQL, Mongo’s query language is comparatively">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://allanmogusu.tk/images/mongo/mongo_img_1.png">
+<meta property="og:image" content="https://allanmogusu.tk/images/mongo/mongo_2.png">
+<meta property="og:image" content="https://allanmogusu.tk/images/mongo/mongo_3.png">
+<meta property="og:image" content="https://allanmogusu.tk/images/mongo/mongo_4.png">
+<meta property="article:published_time" content="2021-07-15T23:07:32.000Z">
+<meta property="article:modified_time" content="2021-07-16T14:35:48.098Z">
+<meta property="article:author" content="Allan Mogusu">
+<meta property="article:tag" content="mongodb">
+<meta property="article:tag" content="mongo">
+<meta property="article:tag" content="efficient queries">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://allanmogusu.tk/images/mongo/mongo_img_1.png">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/images/favicon.ico">
+          
+        
+        
+          
+            <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+          
+        
+        
+          
+            <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+          
+        
+    
+    <!-- title -->
+    <title>Writing Effective Queries in Mongodb</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+      
+<link rel="stylesheet" href="/css/rtl.css">
+
+    
+    <!-- rss -->
+    
+    
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="https://github.com/allan690" target="_blank" rel="noopener">Projects</a></li>
+         
+          <li><a href="/contact/">Contact</a></li>
+        
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        
+        <li><a class="icon" href="/2021/07/16/devops/deploying-to-app-engine-via-gh-actions/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=https://allanmogusu.tk/2021/07/16/writing-effective-queries-in-mongodb/" target="_blank" rel="noopener"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=https://allanmogusu.tk/2021/07/16/writing-effective-queries-in-mongodb/&text=Writing Effective Queries in Mongodb" target="_blank" rel="noopener"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=https://allanmogusu.tk/2021/07/16/writing-effective-queries-in-mongodb/&title=Writing Effective Queries in Mongodb" target="_blank" rel="noopener"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https://allanmogusu.tk/2021/07/16/writing-effective-queries-in-mongodb/&is_video=false&description=Writing Effective Queries in Mongodb" target="_blank" rel="noopener"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Writing Effective Queries in Mongodb&body=Check out this article: https://allanmogusu.tk/2021/07/16/writing-effective-queries-in-mongodb/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=https://allanmogusu.tk/2021/07/16/writing-effective-queries-in-mongodb/&title=Writing Effective Queries in Mongodb" target="_blank" rel="noopener"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=https://allanmogusu.tk/2021/07/16/writing-effective-queries-in-mongodb/&title=Writing Effective Queries in Mongodb" target="_blank" rel="noopener"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=https://allanmogusu.tk/2021/07/16/writing-effective-queries-in-mongodb/&title=Writing Effective Queries in Mongodb" target="_blank" rel="noopener"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=https://allanmogusu.tk/2021/07/16/writing-effective-queries-in-mongodb/&title=Writing Effective Queries in Mongodb" target="_blank" rel="noopener"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=https://allanmogusu.tk/2021/07/16/writing-effective-queries-in-mongodb/&name=Writing Effective Queries in Mongodb&description=" target="_blank" rel="noopener"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://news.ycombinator.com/submitlink?u=https://allanmogusu.tk/2021/07/16/writing-effective-queries-in-mongodb/&t=Writing Effective Queries in Mongodb" target="_blank" rel="noopener"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#TL-DR"><span class="toc-number">1.</span> <span class="toc-text">TL;DR;</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#The-Problem"><span class="toc-number">2.</span> <span class="toc-text">The Problem</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#The-solution"><span class="toc-number">3.</span> <span class="toc-text">The solution</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        Writing Effective Queries in Mongodb
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">Allan Mogusu</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2021-07-15T23:07:32.000Z" itemprop="datePublished">2021-07-16</time>
+        
+      
+    </div>
+
+
+      
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link" href="/tags/mongodb/" rel="tag">mongodb</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p>MongoDB is currently the most popular No-SQL database, the flexibility of its schemas enabling it’s suitability for use with big data. However, compared to SQL, Mongo’s query language is comparatively more difficult to understand and arguably less intuitive. Also, learning to write effective queries in MongoDB is a skill one must learn over time.</p>
+<p>In this brief article, I’ll outline a recent problem I faced with MongoDB queries and share my learnings from the mistakes I made.</p>
+<h2 id="TL-DR"><a href="#TL-DR" class="headerlink" title="TL;DR;"></a>TL;DR;</h2><ul>
+<li><a href="https://docs.mongodb.com/manual/reference/method/db.collection.createIndex/#db.collection.createIndex" target="_blank" rel="noopener">Index lookup fields</a>  to minimize lookup times especially for large collections.</li>
+<li>Try to avoid writing nested pipelines/aggregations. Not only do these make code unreadable, but they also can in some cases be more inefficient.</li>
+<li>Avoid using nested fields in collections unless absolutely necessary. They make lookups more  difficult and potentially expensive.</li>
+<li>Use MongoDB’s explain functionality to know the winning plan of your query. You can think of the winning plan as the optimal way MongoDB will use to process your query.</li>
+<li>Leverage MongoDB’s search capabilities (Atlas Search) to optimize your queries.</li>
+</ul>
+<h2 id="The-Problem"><a href="#The-Problem" class="headerlink" title="The Problem"></a><strong>The Problem</strong></h2><p>Recently, I noticed that our visualization dashboard was not showing county and facility charts( for some maternal health data we analyze). On investigation, I noticed that the aggregations that were responsible for generating that information had stopped working.</p>
+<p>This was due to timeout issues occasioned by the long processing time of the aggregations.</p>
+<p><strong>Attempted Solution</strong></p>
+<p>The aggregation to be done involved looking up the contact info for every incoming message. However, the contact info in the <code>contacts</code> collection was mostly an array, and in some cases a string or null.</p>
+<p>My first step was to clean the contacts collections by replacing the nested fields with a single string field of the contact’s phone number.</p>
+<p>Next I indexed both the lookup fields, <code>phone</code> and <code>Tel</code> below on MongoDB compass manually, as regular indexes you can find more info about <a href="https://docs.mongodb.com/manual/tutorial/manage-indexes/#view-existing-indexes" target="_blank" rel="noopener">how to do that here</a>. I then tried this aggregation which tries to find a matching substring in the <code>Tel</code> field of the <code>contacts</code> collection. Here’s how the aggregation looked:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">cursor = db.incoming_messages.aggregate([</span><br><span class="line">    &#123;</span><br><span class="line">     <span class="string">'$lookup'</span>:</span><br><span class="line">       &#123;</span><br><span class="line">         <span class="string">'from'</span>: <span class="string">"contacts"</span>,</span><br><span class="line">         <span class="string">'let'</span>: &#123; <span class="string">'phone'</span>: <span class="string">"$phone"</span>&#125;,</span><br><span class="line">          <span class="string">'pipeline'</span>: [</span><br><span class="line">              &#123;<span class="string">'$match'</span>: &#123; <span class="string">"$expr"</span>: &#123; <span class="string">'$gt'</span>: [&#123; <span class="string">"$indexOfCP"</span>: [<span class="string">"$Tel"</span>, <span class="string">"$$phone"</span>]&#125;, <span class="number">-1</span>]&#125;&#125;&#125;</span><br><span class="line">          ],</span><br><span class="line">           <span class="string">'as'</span>: <span class="string">'contact'</span></span><br><span class="line">       &#125;&#125;</span><br><span class="line">  ])</span><br></pre></td></tr></table></figure>
+
+<p>While this aggregation works, it would take a few minutes to run on an input collection of only 50 documents. This is because for each input document, it scans the entire collection for the matching document before returning. This intuitively grows worse as the collections grow.</p>
+<p>MongoDB has some nice <code>[explain</code> functionality](<a href="https://docs.mongodb.com/manual/reference/explain-results/" target="_blank" rel="noopener">https://docs.mongodb.com/manual/reference/explain-results/</a>) for queries that allows you to know beforehand the query plan Mongo deems optimal for your query. This prepares you to understand the cost of your queries. Running this on Jupyter with Python3, I got the following results:</p>
+<p><img src="/images/mongo/mongo_img_1.png" alt="Screenshot 1"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#39;stages&#39;: [&#123;&#39;$cursor&#39;: &#123;&#39;query&#39;: &#123;&#125;,</span><br><span class="line">    &#39;queryPlanner&#39;: &#123;&#39;plannerVersion&#39;: 1,</span><br><span class="line">     &#39;namespace&#39;: &#39;enrollments.Incoming_Messages_Glue&#39;,</span><br><span class="line">     &#39;indexFilterSet&#39;: False,</span><br><span class="line">     &#39;parsedQuery&#39;: &#123;&#125;,</span><br><span class="line">     &#39;queryHash&#39;: &#39;8B3D4AB8&#39;,</span><br><span class="line">     &#39;planCacheKey&#39;: &#39;8B3D4AB8&#39;,</span><br><span class="line">     &#39;winningPlan&#39;: &#123;&#39;stage&#39;: &#39;COLLSCAN&#39;, &#39;direction&#39;: &#39;forward&#39;&#125;,</span><br><span class="line">     &#39;rejectedPlans&#39;: []&#125;&#125;&#125;,</span><br><span class="line">  &#123;&#39;$lookup&#39;: &#123;&#39;from&#39;: &#39;contacts&#39;,</span><br><span class="line">    &#39;as&#39;: &#39;contact&#39;,</span><br><span class="line">    &#39;let&#39;: &#123;&#39;phone&#39;: &#39;$phone&#39;&#125;,</span><br><span class="line">    &#39;pipeline&#39;: [&#123;&#39;$match&#39;: &#123;&#39;$expr&#39;: &#123;&#39;$gt&#39;: [&#123;&#39;$indexOfCP&#39;: [&#39;$Tel&#39;,</span><br><span class="line">           &#39;$$phone&#39;]&#125;,</span><br><span class="line">         -1]&#125;&#125;&#125;]&#125;&#125;],</span><br><span class="line"> &#39;ok&#39;: 1.0&#125;</span><br></pre></td></tr></table></figure>
+
+<p>As you notice, the winning plan for the query is <code>COLLSCAN</code> which means we will be scanning the entire <code>contacts</code> collection to find a matching contact. This, despite indexing both collections.</p>
+<p>When I timed this query, I found out that it took about 20 secs to execute on an input collection of only 10 documents. If you should project that to &gt;350,000 documents, then you have a really inefficient query at hand.</p>
+<p><img src="/images/mongo/mongo_2.png" alt="Screenshot 2"></p>
+<p>I did try a bunch of other queries afterwards, but this was the general approach I settled on.</p>
+<h2 id="The-solution"><a href="#The-solution" class="headerlink" title="The solution"></a>The solution</h2><p>After quite a bit of search, I finally discovered that MongoDB’s cloud offering, ships with a native search engine called <a href="https://docs.atlas.mongodb.com/atlas-search/" target="_blank" rel="noopener">Atlas Search</a>, that makes it significantly easier to build fast-search on MongoDB. This was absolutely mind-blowing for me. The API is also very intuitive and easy.</p>
+<p>The first step is to  create a <code>text</code> index on the search fields in our target collection.  According to <a href="https://docs.mongodb.com/manual/core/link-text-indexes/" target="_blank" rel="noopener">Mongo’s documentation</a>, you can only create a single text index per collection. This index can comprise of multiple fields(<a href="https://docs.mongodb.com/manual/core/index-compound/index.html" target="_blank" rel="noopener">a compound index</a>).  In Python, creating an index on the <code>Tel</code> field of the <code>contacts</code> collection would correspond to:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">contacts_collection.create_index([(<span class="string">"Tel"</span>, pymongo.TEXT)])</span><br></pre></td></tr></table></figure>
+
+<p>Using this, I could now write a query that could perform a lookup on about 4500 input documents on a target collection of over 350, 000 documents in about 3.8 sec. This is significantly more optimal compared to the nested pipelines I was writing.</p>
+<p><img src="/images/mongo/mongo_3.png" alt="Screenshot 3"></p>
+<p>If you should try to profile the query using the explain method on the mongo db shell, you should get the following results or similar:</p>
+<p><img src="/images/mongo/mongo_4.png" alt="Screenshot 4"></p>
+<p>You notice now that we are doing an <code>IXSCAN</code> (index scan) on the collection instead of a full collection scan(COLLSCAN), thus reducing our search footprint. This allows us to have quick response times for our queries.</p>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="https://github.com/allan690" target="_blank" rel="noopener">Projects</a></li>
+         
+          <li><a href="/contact/">Contact</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#TL-DR"><span class="toc-number">1.</span> <span class="toc-text">TL;DR;</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#The-Problem"><span class="toc-number">2.</span> <span class="toc-text">The Problem</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#The-solution"><span class="toc-number">3.</span> <span class="toc-text">The solution</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=https://allanmogusu.tk/2021/07/16/writing-effective-queries-in-mongodb/" target="_blank" rel="noopener"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=https://allanmogusu.tk/2021/07/16/writing-effective-queries-in-mongodb/&text=Writing Effective Queries in Mongodb" target="_blank" rel="noopener"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=https://allanmogusu.tk/2021/07/16/writing-effective-queries-in-mongodb/&title=Writing Effective Queries in Mongodb" target="_blank" rel="noopener"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https://allanmogusu.tk/2021/07/16/writing-effective-queries-in-mongodb/&is_video=false&description=Writing Effective Queries in Mongodb" target="_blank" rel="noopener"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Writing Effective Queries in Mongodb&body=Check out this article: https://allanmogusu.tk/2021/07/16/writing-effective-queries-in-mongodb/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=https://allanmogusu.tk/2021/07/16/writing-effective-queries-in-mongodb/&title=Writing Effective Queries in Mongodb" target="_blank" rel="noopener"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=https://allanmogusu.tk/2021/07/16/writing-effective-queries-in-mongodb/&title=Writing Effective Queries in Mongodb" target="_blank" rel="noopener"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=https://allanmogusu.tk/2021/07/16/writing-effective-queries-in-mongodb/&title=Writing Effective Queries in Mongodb" target="_blank" rel="noopener"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=https://allanmogusu.tk/2021/07/16/writing-effective-queries-in-mongodb/&title=Writing Effective Queries in Mongodb" target="_blank" rel="noopener"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=https://allanmogusu.tk/2021/07/16/writing-effective-queries-in-mongodb/&name=Writing Effective Queries in Mongodb&description=" target="_blank" rel="noopener"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://news.ycombinator.com/submitlink?u=https://allanmogusu.tk/2021/07/16/writing-effective-queries-in-mongodb/&t=Writing Effective Queries in Mongodb" target="_blank" rel="noopener"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2021
+    Allan Mogusu
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="https://github.com/allan690" target="_blank" rel="noopener">Projects</a></li>
+         
+          <li><a href="/contact/">Contact</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+
+<link rel="stylesheet" href="/lib/justified-gallery/css/justifiedGallery.min.css">
+
+
+    <!-- jquery -->
+
+<script src="/lib/jquery/jquery.min.js"></script>
+
+
+<script src="/lib/justified-gallery/js/jquery.justifiedGallery.min.js"></script>
+
+<!-- clipboard -->
+
+  
+<script src="/lib/clipboard/clipboard.min.js"></script>
+
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="far fa-clone"></i>';
+    btn += '</span>'; 
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Disqus Comments -->
+
+
+</body>
+</html>
